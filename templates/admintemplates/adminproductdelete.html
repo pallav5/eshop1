@@ -1,0 +1,29 @@
+  <!-- Normal Block Modal -->
+  <div class="modal" id="modal-block-productdelete" tabindex="-1" role="dialog" aria-labelledby="modal-block-normal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="block block-rounded block-themed block-transparent mb-0">
+				<div class="block-header bg-primary-dark">
+					<h3 class="block-title">Modal Title</h3>
+					<div class="block-options">
+						<button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+							<i class="fa fa-fw fa-times"></i>
+						</button>
+					</div>
+				</div>
+				<form method="POST" action="{% url 'eshopapp:adminproductdelete' object.id %}">
+					{% csrf_token %}
+					<div class="modal-body">
+						<h5 class="mb-15">Are you sure you want to delete '{{object}}'?</h5>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-success text-left">Confirm</button>
+						<button type="button" class="btn btn-danger text-left" data-dismiss="modal">Cancel</button>
+					</div>
+				</form>
+			   
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END Normal Block Modal -->

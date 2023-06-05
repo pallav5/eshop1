@@ -1,0 +1,412 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Eshop</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'clientstatic/css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/font-awesome.min.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/themify-icons.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/elegant-icons.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/owl.carousel.min.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/nice-select.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/jquery-ui.min.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/slicknav.min.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'clientstatic/css/searchmain.css' %}" type="text/css">
+    
+<style>
+  
+    .dropdown-item.active, .dropdown-item:active{
+
+        background-color: maroon;
+
+       
+    }
+
+    .btn-secondary.focus, .btn-secondary:focus{
+            box-shadow: none !important;
+        }
+        
+        .btn.focus, .btn:focus{
+            box-shadow: none !important;
+            /* width: 200px; */
+        }
+
+        .btn-secondary.focus, .btn-secondary:focus{
+            background-color: maroon !important;
+            color: white !important;
+
+        }
+
+        .dropdown-menu{
+           
+            min-width: 13rem;
+        }
+
+        .nice-select{
+            border: none;
+            width: 190px;
+        }
+
+
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) 
+and (orientation: portrait) {
+  /* CSS styles specific to iPad portrait mode */
+  .inner-header .advanced-search .input-group button {
+    right: -125px;
+  }
+}
+
+.page-item.active .page-link{
+    background-color: maroon ;
+    border-color: maroon ;
+}
+.page-link {
+    color: maroon;
+
+}
+      
+</style>
+{% block css %}
+    
+{% endblock css %}
+    
+</head>
+
+<body>
+
+    <!-- Header Section Begin -->
+<header class="header-section">
+    <div class="header-top">
+        <div class="container">
+            <div class="ht-left">
+                <div class="mail-service">
+                    <i class=" fa fa-envelope"></i>
+                   {{org.email}}
+                </div>
+                <div class="phone-service">
+                    <i class=" fa fa-phone"></i>
+                    {{org.contact_no}}
+                </div>
+            </div>
+            <div class="ht-right">
+                <a href="{% url 'eshopapp:customerlogin' %}" class="login-panel"><i class="fa fa-user"></i>Login</a>
+                <div class="lan-selector">
+                    <li style="background-color: white; color: maroon;" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle p-0 pl-2 pr-2 text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        My Account
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% if request.user.customer %}
+                        <a class="dropdown-item" href="{% url 'eshopapp:customerprofile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'eshopapp:customerlogout' %}">Logout</a>
+                        {% else %}
+                        <a class="dropdown-item" href="{% url 'eshopapp:customerregistration' %}">Register</a>
+                        <a class="dropdown-item" href="{% url 'eshopapp:customerlogin' %}">Login</a>
+                        {% endif %}
+                        </div>
+                    </li>
+                </div>
+                <div class="top-social">
+                    <a href="#"><i class="ti-facebook"></i></a>
+                    <a href="#"><i class="ti-twitter-alt"></i></a>
+                    <a href="#"><i class="ti-linkedin"></i></a>
+                    <a href="#"><i class="ti-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="inner-header">
+            <div class="row">
+                <div class="col-lg-2 col-md-2">
+                    <div class="logo p-0">
+                        <a href="{% url 'eshopapp:clienthome' %}">
+                            <img style="height: 50px; object-fit: contain;" src="{{org.logo.url}}" alt="">
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-7 col-md-7 mb-3 mt-4 mt-lg-0 mb-lg-0">
+                    <form method="get" action=" {% url 'eshopapp:clientproductsearchlist' %}">
+                    <div class="advanced-search ">
+                        <div class="row ">
+                            <div class="col-4">
+                        <div class="select-option">
+                            <select name ='c' style="border: none; " class="sorting mt-1 ml-3 ">
+                                <option  value="">All Categories</option>
+                                {% for category in allcategories  %}
+                                    <option  value="{{category.title}}">{{category.title}}</option>
+                                    
+                                    {% endfor %}
+                                    
+                            </select>
+                           
+                        </div>
+                    </div>
+                        <!-- <div  class="dropdown hierarchy-select select-option" id="example">
+                            <button style="width: 200px;" type="button" class="btn btn-secondary category-btn" id="example-two-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                            <div class="dropdown-menu shadow-lg p-2   bg-white " aria-labelledby="example-two-button">
+                               
+                                <div class="hs-menu-inner  ">
+                                    
+                                    <a class="dropdown-item " data-value="" data-default-selected="" href="#">All Categories</a>
+                                    
+                                    {% for category in allcategories  %}
+                                        
+                                    
+                                        
+                                    <a class="dropdown-item" data-value="{{category.title}}" href="#">{{category.title}}</a>
+                                    {% endfor %}
+                                    
+                                    
+                                </div>
+                            </div>
+                            <input class="d-none" name="c"  readonly="readonly" aria-hidden="true" type="text"/>
+                        </div> -->
+                       
+                     
+                        <div class="col-8">
+                        <div class="input-group padding-button pl-5">
+                           
+                            <input required name = 'q' type="text" placeholder="Search">
+                            <button type="submit"><i class="ti-search"></i></button>
+                  
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    </form>
+                </div>
+                <div class="col-lg-3 text-right col-md-3">
+                    <ul class="nav-right">
+                        <li class="heart-icon">
+                            <a href="#">
+                                <i class="icon_heart_alt"></i>
+                                <span>1</span>
+                            </a>
+                        </li>
+                        <li class="cart-icon">
+                            <a >
+                                <i class="icon_bag_alt"></i>
+                                <span>{{cart.cartproduct_set.all.count}}</span>
+                            </a>
+                            <div class="cart-hover">
+                                <div class="select-items">
+                                    <table>
+                                        <tbody>
+                                            {% for cp in cart.cartproduct_set.all|slice:"3"  %}
+                                                    
+                                            <tr> 
+                                                    
+                                            <td class="si-pic"><img style="height: 60px;" src="{{cp.product.image1.url}}" alt=""></td>
+                                            <td class="si-text">
+                                                <div class="product-selected">
+                                                    <p>Rs. {{cp.rate}} x {{cp.quantity}}</p>
+                                                    <h6>{{cp.product.title}}</h6>
+                                                </div>
+                                            </td>
+                                            <td class="si-close">
+                                                <i class="ti-close"></i>
+                                            </td>
+                                        </tr>
+                                            {% endfor %}
+                                           
+
+                                                                   
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% if total %}
+                                <div class="select-total font-weight-bold">
+                                    <span>total:</span>
+                                    <h5 class="font-weight-bold">Rs. {{total|intcomma}}/-</h5>
+                                </div>
+                                <div class="select-button">
+                                    <a href="{% url 'eshopapp:mycart' %}" class="primary-btn view-card">View All</a>
+                                    <a href="{% url 'eshopapp:checkout' %}" class="primary-btn checkout-btn">CHECK OUT</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="cart-price">$150.00</li>
+                        {%endif%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav-item">
+        <div class="container">
+            <div class="nav-depart">
+                <div class="depart-btn">
+                    <i class="ti-menu"></i>
+                    <a style="color: white;" href="{% url 'eshopapp:clientproductlist'  %}"><span>All Products</span></a>
+                    <ul class="depart-hover">
+                        <li><a href="{% url 'eshopapp:clientproductbymaincategorylist' 'MensWear' %}">Men's Clothing</a></li>
+                        <li><a href="{% url 'eshopapp:clientproductbymaincategorylist' 'WomensWear' %}">Women's Clothing</a></li>
+                        <li><a href="{% url 'eshopapp:clientproductbymaincategorylist' 'KidsWear' %}">Kid's Clothing</a></li>
+                        <li><a href="{% url 'eshopapp:clientproductbymaincategorylist' 'Others' %}">Others</a></li>
+                        
+                        
+                    </ul>
+                </div>
+            </div>
+            <nav class="nav-menu mobile-menu">
+                <ul>
+                    <li class="active"><a href="{% url 'eshopapp:clienthome' %}">Home</a></li>
+                    <li><a href="{% url 'eshopapp:clientproductlist' %}">Shop</a></li>
+                    <li><a >Collection</a>
+                        <ul class="dropdown">
+                            
+                            {% for category in allcategories %}
+                                
+                           
+                                
+                            <li><a href=" {% url 'eshopapp:clientproductbycategorylist' category.slug %} ">{{category.title}}</a></li>
+                            {% endfor %}
+                           
+                        </ul>
+                    </li>
+                    <li><a href="./blog.html">Blog</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                    <li><a href="#">Pages</a>
+                        <ul class="dropdown">
+                            <li><a href="./blog-details.html">Blog Details</a></li>
+                            <li><a href="./shopping-cart.html">Shopping Cart</a></li>
+                            <li><a href="./check-out.html">Checkout</a></li>
+                            <li><a href="./faq.html">Faq</a></li>
+                            <li><a href="./register.html">Register</a></li>
+                            <li><a href="./login.html">Login</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </div>
+</header>
+<!-- Header End -->
+
+   
+    
+    {% block home %} {% endblock %}
+    {% block content %} {% endblock %}
+    
+    {% block productdetail %} {% endblock %}
+    {% block productlist %} {% endblock %}
+    {% block searchproductlist %} {% endblock %}
+        
+        
+
+    <!-- Footer Section Begin -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="footer-left">
+                        <div class="footer-logo">
+                            <a href="#"><img src="img/footer-logo.png" alt=""></a>
+                        </div>
+                        <ul>
+                            <li>Address: 60-49 Road 11378 New York</li>
+                            <li>Phone: +65 11.188.888</li>
+                            <li>{{org.email}}</li>
+                        </ul>
+                        <div class="footer-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 offset-lg-1">
+                    <div class="footer-widget">
+                        <h5>Information</h5>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Checkout</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Serivius</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer-widget">
+                        <h5>My Account</h5>
+                        <ul>
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Shopping Cart</a></li>
+                            <li><a href="#">Shop</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="newslatter-item">
+                        <h5>Join Our Newsletter Now</h5>
+                        <p>Get E-mail updates about our latest shop and special offers.</p>
+                        <form action="#" class="subscribe-form">
+                            <input type="text" placeholder="Enter Your Mail">
+                            <button type="button">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copyright-reserved">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="copyright-text">
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        </div>
+                        <div class="payment-pic">
+                            <img src="img/payment-method.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'clientstatic/js/jquery-3.3.1.min.js' %}"></script>
+    
+    <script src="{% static 'clientstatic/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'clientstatic/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'clientstatic/js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'clientstatic/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'clientstatic/js/jquery.zoom.min.js' %}"></script>
+    <script src="{% static 'clientstatic/js/jquery.dd.min.js' %}"></script>
+    <script src="{% static 'clientstatic/js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'clientstatic/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'clientstatic/js/main.js' %} "></script>
+    <script src="{% static 'clientstatic/js/choices.js' %} "></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+            
+    
+    
+    {% block js %}
+        
+    {% endblock js %}
+        
+</body>
+
+</html>

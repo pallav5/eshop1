@@ -1,0 +1,559 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+
+{% block css %}
+    <style>
+         @media only screen and (max-device-width: 480px){
+
+.product-item img {
+    height: 170px;
+    object-fit: contain;
+}
+}
+
+@media (max-width:1281px),(min-width:801px) {
+.product-item img {
+    height: 200px;
+    object-fit: contain;
+}
+
+}
+    </style>
+{% endblock css %}
+    
+{% block productdetail %}
+
+ <!-- Breadcrumb Section Begin -->
+ <div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text product-more">
+                    <a href="./home.html"><i class="fa fa-home"></i> Home</a>
+                    <a href="./shop.html">Shop</a>
+                    <span>Detail</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb Section Begin -->
+
+<!-- Product Shop Section Begin -->
+<section class="product-shop spad p-3 page-details">
+    <div class="container">
+        <div class="row">
+   
+
+            <div class="col-lg-10">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="product-pic-zoom ">
+                            <img style="height: 400px; object-fit: contain;" class="product-big-img " src="{{productdetail.image1.url}}" alt="">
+                            <div class="zoom-icon"> 
+                                <i class="fa fa-search-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product-thumbs">
+                            <div class="product-thumbs-track ps-slider owl-carousel">
+                               
+                                <div class="pt active" data-imgbigurl="{{productdetail.image1.url}}">
+                                    
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image1.url}}" alt=""></div>
+                             
+                             
+                                    <div class="pt" data-imgbigurl="{{productdetail.image2.url}}">
+                                    
+                                    
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image2.url}}" alt=""></div>
+                               
+                                    {% if productdetail.image3 %}
+                                    <div class="pt" data-imgbigurl="{{productdetail.image3.url}}">
+                                   
+                                   
+                                        <img style="height: 125px; object-fit: contain;" src="{{productdetail.image3.url}}" alt=""></div>
+                                        
+                                        {%endif%}
+                                      
+                                      
+                                      {% if productdetail.image4 %}
+                                        
+                                   
+                                          <div class="pt" data-imgbigurl="{{productdetail.image4.url}}">
+
+                                   
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image4.url}}" alt=""></div>
+                                   
+                                {%endif%}
+
+                                      {% if productdetail.image5 %}
+                                        
+                                   
+                                          <div class="pt" data-imgbigurl="{{productdetail.image5.url}}">
+
+                                   
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image5.url}}" alt=""></div>
+                                   
+                                {%endif%}
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="product-details">
+                            <div class="pd-title">
+                                <!-- <span>oranges</span> -->
+                                <h3>{{productdetail.title}}</h3>
+                                <!-- <a href="#" class="heart-icon"><i class="icon_heart_alt"></i></a> -->
+                            </div>
+                            <!-- <div class="pd-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-o"></i>
+                                <span>(5)</span>
+                            </div> -->
+                            <div class="pd-desc">
+                                <p>{{productdetail.description|safe}}</p>
+                            
+                            {% if productdetail.selling_price %}
+                                
+                           
+                                    <h4>Rs. {{productdetail.selling_price}} {% else %} <h4> Rs. {{productdetail.marked_price}}</h4>  {% endif %}  {% if productdetail.selling_price %} <span> Rs. {{productdetail.marked_price}}</span> {%endif%}</h4>
+                            </div>
+                            <div class="pd-color">
+                                <h6>Color :</h6>
+
+                                
+                                {% for color  in productdetail.color.all %}
+                               <div class=""> <h6 style="color: #7C0000;" class=" ">{{color}}</h6> </div>
+                                {% endfor %}
+                                <br>
+                                
+                                <!-- <div class="pd-color-choose">
+                                    <div class="cc-item">
+                                        <input type="radio" id="cc-black">
+                                        <label for="cc-black"></label>
+                                    </div>
+                                    <div class="cc-item">
+                                        <input type="radio" id="cc-yellow">
+                                        <label for="cc-yellow" class="cc-yellow"></label>
+                                    </div>
+                                    <div class="cc-item">
+                                        <input type="radio" id="cc-violet">
+                                        <label for="cc-violet" class="cc-violet"></label>
+                                    </div>
+                                </div> -->
+                            </div>
+                            {% if productdetail.size.all %}
+                            <div class="pd-size-choose mb-0">
+                                <div  class="pd-color">
+                              <h6  class="pt-2 text-success">Sizes : </h6>  </div>
+                                
+                                {% for size  in productdetail.size.all %}
+                                <div class="sc-item">
+                                    <input type="radio" id="sm-size">
+                                    
+                               
+                                    
+                                    {% if "Extra Small" == size.title %}
+
+                                  <label for=" xs-size ">xs</label>
+                                 
+                                 {% elif "Small" == size.title %}
+                                 <label for=" sm-size ">s</label>
+
+                                 {% elif "Medium" == size.title %}
+
+                                  <label for=" md-size ">m</label>
+
+                                  {% elif "Large" == size.title %}
+
+                                  <label for=" lg-size ">l</label>
+                                  
+                                  {% elif "Extra Large" == size.title %}
+
+                                  <label for=" xl-size ">xl</label>
+
+                                  
+                                 
+                                 {% endif %}
+
+
+                                
+                                    
+                                </div>
+
+                                {% endfor %}
+                              
+                            </div>
+                            {%endif%}
+                            <div class="">
+                                <h5 style="color: maroon; font-weight: 700;" > Stock :  {{productdetail.instock}} </h5>
+                            </div>
+                            <ul class="pd-tags">
+                                <li><span>CATEGORIES</span>: {% for category in productdetail.category.all  %}
+                                    {{category}} {% if not forloop.last %}| {%endif%}
+                                 {% endfor %}</li>
+                                <!-- <li><span>TAGS</span>: Clothing, T-shirt, Woman</li> -->
+                            </ul>
+                            <div class="pd-share ">
+                                <!-- <div class="p-code">Sku : 00012</div> -->
+                                <div class="pd-social ">
+                                    <a href="#"><i class="ti-facebook"></i></a>
+                                    <a href="#"><i class="ti-twitter-alt"></i></a>
+                                    <a href="#"><i class="ti-linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               
+                <div class="product-tab pt-3 col-lg-12">
+                    <div class="tab-item">
+                        <ul class="nav" role="tablist">
+                            <li>
+                                <a class="active" data-toggle="tab" href="#tab-1" role="tab">DESCRIPTION</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#tab-2" role="tab">SPECIFICATIONS</a>
+                            </li>
+                           
+                        </ul>
+                    </div>
+                   
+                </div>
+
+        <div class="tab-item-content">
+            <div class="tab-content">
+                <div class="tab-pane fade-in active " id="tab-1" role="tabpanel">
+                    <div class="product-content pl-3">
+                        <div class="row">
+                            <div class="">
+                                {{productdetail.description|safe}}
+                            </div>
+                            <div class="col-12 mt">
+                                <img src="img/product-single/tab-desc.jpg" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade pl-3 " id="tab-2" role="tabpanel">
+                    <div class="specification-table ">
+
+                        <div class="row">
+                        <table style="width: 700px;">
+                            <tr>
+                                <!-- <td class="p-catagory">Customer Rating</td> -->
+                                <!-- <td>
+                                    <div class="pd-rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <span>(5)</span>
+                                    </div>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td class="p-catagory">Marked Price</td>
+                                <td>
+                                    <div class="p-price">Rs. {{productdetail.marked_price}}</div>
+                                </td>
+                            </tr>
+
+                                                               
+                           
+                          
+                          {% if productdetail.selling_price %}
+                            
+                          
+                              <tr> 
+                                <td class="p-catagory">Selling Price</td>
+                                <td>
+                                    <div class="p-price">Rs. {{productdetail.selling_price}}</div>
+                                </td>
+                            </tr>
+                            {% endif %}
+
+                          {% if productdetail.discount_pct %}
+                            
+                          
+                              <tr> 
+                                <td class="p-catagory">Discount</td>
+                                <td>
+                                    <div class="p-price">{{productdetail.discount_pct}} %</div>
+                                </td>
+                            </tr>
+                            {% endif %}
+
+                          {% if productdetail.brand %}
+                            
+                          
+                              <tr> 
+                                <td class="p-catagory">Brand</td>
+                                <td>
+                                    <div class="p-price">{{productdetail.brand}}</div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                
+                            </tr>
+                            <tr>
+                                <td class="p-catagory">Availability</td>
+                                <td>
+                                    <div class="p-stock">{{productdetail.instock}} in stock</div>
+                                </td>
+                            </tr>
+                           
+                            <tr>
+                                <td class="p-catagory">Size</td>
+                               
+                                
+                                <td>
+                                    {% for size in productdetail.size.all  %}
+                                    <div class="p-size">{{size}} {% if not forloop.last %}, {%endif%}</div>
+                                    {%endfor%}
+                                </td>
+                               
+                            </tr>
+                           
+                            <tr>
+                                <td class="p-catagory">Color</td>
+                                <td> {% for color in productdetail.color.all  %}
+                                    <div class="p-code">{{color}} {% if not forloop.last %}, {%endif%}</div>
+                                    {%endfor%}
+                                   
+                                </td>
+
+                                
+                            </tr>
+
+                            <tr>
+                                
+                                {% if productdetail.weight  %}
+                                    
+                               
+                                    
+                                <td class="p-catagory">Weight</td>
+                                <td>
+                                    <div class="p-weight">{{productdetail.weight}} </div>
+                                </td>
+                                {% endif %}
+
+                              
+                                
+                                    {% if productdetail.height  %}
+                                    <tr>
+                                   
+                                        
+                                    <td class="p-catagory">Height</td>
+                                    <td>
+                                        <div class="p-weight">{{productdetail.height}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                   
+                                    
+                                    {% if productdetail.length  %}
+                                    <tr>
+                                   
+                                        
+                                    <td class="p-catagory">Length</td>
+                                    <td>
+                                        <div class="p-weight">{{productdetail.length}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                
+                                    {% if productdetail.width  %}
+                                        
+                                   
+                                      <tr>  
+                                    <td class="p-catagory">Width</td>
+                                    <td>
+                                        <div class="p-weight">{{productdetail.width}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                    {% if productdetail.return_policy  %}
+                                        
+                                   
+                                        <tr class="">
+                                    <td class="p-catagory">Return Policy</td>
+                                    <td>
+                                        <div  class="p-weight text-center ">{{productdetail.return_policy|safe}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                </tr>
+                            </tr>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+             
+            </div>
+        </div>
+            </div>
+            </div>
+            <div class="col-lg-2 col-sm-12 ">
+                <div class="filter-widget">
+                    <h4 class="fw-title">Categories</h4>
+                    <ul class="filter-catagories">
+                        {% for category  in allcategories  %}
+                            
+                       
+                            
+                        <li><a href="{% url 'eshopapp:clientproductbycategorylist' category.slug %}">{{category.title}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="filter-widget">
+                    <h4 class="fw-title">Brand</h4>
+                    <div class="fw-brand-check">
+                        <div class="bc-item">
+                            <label for="bc-calvin">
+                                Calvin Klein
+                                <input type="checkbox" id="bc-calvin">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="bc-item">
+                            <label for="bc-diesel">
+                                Diesel
+                                <input type="checkbox" id="bc-diesel">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="bc-item">
+                            <label for="bc-polo">
+                                Polo
+                                <input type="checkbox" id="bc-polo">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="bc-item">
+                            <label for="bc-tommy">
+                                Tommy Hilfiger
+                                <input type="checkbox" id="bc-tommy">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-widget">
+                    <h4 class="fw-title">Price</h4>
+                    <div class="filter-range-wrap">
+                        <div class="range-slider">
+                            <div class="price-input">
+                                <input type="text" id="minamount">
+                                <input type="text" id="maxamount">
+                            </div>
+                        </div>
+                        <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
+                            data-min="33" data-max="98">
+                            <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                        </div>
+                    </div>
+                    <a href="#" class="filter-btn">Filter</a>
+                </div>
+               
+                <!-- <div class="filter-widget">
+                    <h4 class="fw-title">Size</h4>
+                    <div class="fw-size-choose">
+                        <div class="sc-item">
+                            <input type="radio" id="s-size">
+                            <label for="s-size">s</label>
+                        </div>
+                        <div class="sc-item">
+                            <input type="radio" id="m-size">
+                            <label for="m-size">m</label>
+                        </div>
+                        <div class="sc-item">
+                            <input type="radio" id="l-size">
+                            <label for="l-size">l</label>
+                        </div>
+                        <div class="sc-item">
+                            <input type="radio" id="xs-size">
+                            <label for="xs-size">xs</label>
+                        </div>
+                    </div>
+                </div> -->
+               
+            </div>
+
+        </div>
+       
+        </div>
+    </div>
+</section>
+<!-- Product Shop Section End -->
+
+<!-- Related Products Section End -->
+<div class="">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2 style="font-size: 20pt;">Related Products</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-lg-3">
+            
+                
+                {% for product  in related_products  %}
+                    
+                <div class="col-lg-3 col-sm-6 ">
+                    
+                <div class="product-item shadow p-2">
+                    <div class="pi-pic">
+                        <img src="{{product.image1.url}}" alt="">
+                        {% if product.selling_price %}
+                        <div class="sale">Sale</div>
+                        {%endif%}
+                        
+                        <ul>
+                            <!-- <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li> -->
+                            <li style="background-color: #7C0000;" class="quick-view "><a class="text-white" href="{% url 'eshopapp:clientproductdetail' product.slug %}"> View Detail</a></li>
+                            <!-- <li class="w-icon"><a href="#"><i class="fa fa-random"></i></a></li> -->
+                        </ul>
+                    </div>
+                    <div class="pi-text">
+                        <div class="catagory-name">{% for category in product.category.all  %}
+                            {{category}} {% if not forloop.last %}| {%endif%}
+                         {% endfor %}</div>
+                        <a href="{% url 'eshopapp:clientproductdetail' product.slug %}">
+                            <h5>{{product.title}}</h5>
+                        </a>
+                        <div class="product-price">
+
+                            {% if product.selling_price %}
+                            Rs. {{product.selling_price}}
+                            {%else%}
+                            Rs. {{product.marked_price}}
+                            {%endif%}
+                            
+                            {% if product.selling_price %}
+                                
+                           
+                                
+                            <span>Rs. {{product.marked_price}}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+                {% endfor %}
+            </div>
+            
+    </div>
+</div>
+<!-- Related Products Section End -->
+    
+{% endblock productdetail %}
+    

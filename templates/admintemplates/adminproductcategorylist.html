@@ -1,0 +1,207 @@
+{% extends 'admintemplates/adminbase.html' %}
+
+{%block 'adminproductcategorylist' %} 
+
+
+ <!-- Main Container -->
+ <main id="main-container">
+    <!-- Page Content -->
+    <div class="content">
+        <!-- Quick Overview -->
+        <div class="row">
+            <div class="col-6 col-lg-3">
+                <a class="block block-rounded block-link-shadow text-center" href="{% url 'eshopapp:adminproductcategorycreate'  %}">
+                    
+                    <div class="block-content py-2 bg-body-light">
+                        <p class="font-w600 font-size-sm text-success mb-0">
+                           + Add New
+                        </p>
+                    </div>
+                </a>
+            </div>
+            
+          {% comment %}
+            
+          
+            <div class="col-6 col-lg-3">
+                <a class="block block-rounded block-link-shadow text-center" href="be_pages_ecom_dashboard.html">
+                    <div class="block-content block-content-full">
+                        <div class="font-size-h2 text-dark">14503</div>
+                    </div>
+                    <div class="block-content py-2 bg-body-light">
+                        <p class="font-w600 font-size-sm text-muted mb-0">
+                            All Categories
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            {% endcomment %}
+        </div>
+        <!-- END Quick Overview -->
+
+        <!-- All Products -->
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">All Categories</h3>
+                <div class="block-options">
+                    
+                </div>
+            </div>
+            <div class="block-content">
+                <!-- Search Form -->
+                <form action="be_pages_ecom_products.html" method="POST">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-alt" id="one-ecom-products-search" name="one-ecom-products-search" placeholder="Search all products..">
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-body border-0">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END Search Form -->
+
+                <!-- All Products Table -->
+                <div class="table-responsive">
+                    <table class="table  table-striped table-vcenter">
+                        <thead>
+                            <tr>
+                                <th class="text-center" >Title</th>
+                                <th class="text-center" >Image</th>
+                                <th class="d-none d-sm-table-cell text-center">Added on</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for product in adminproductcategorylist  %}
+
+                                
+                            <tr class="text-center">
+                                
+                                <td class="d-none d-md-table-cell font-size-sm">
+                                    <span href="">{{product.title}}</a>
+                                </td>
+
+                                {% if product.image %}
+                                <td>
+                                    <img style="height: 80px; width: 80px; object-fit: cover;"  src="{{product.image.url}}" alt="">
+                                </td>
+                                {% else %}
+                                <td>None</td>
+                                {%endif%}
+                                <td class="d-none d-sm-table-cell text-center font-size-sm">{{product.created_at|date:"d-m-Y"}}</td>
+                               
+                              
+                                <td class="font-size-sm">
+                                    
+                                    <a class="btn btn-sm btn-alt-secondary" href="{% url 'eshopapp:adminproductcategoryupdate' product.id %}" data-toggle="tooltip" title="Update">
+                                        <i class="fa fa-fw fa-pen"></i>
+                                    </a>
+                                    <a type="button" class="btn btn-sm btn-alt-danger "  data-toggle="modal" data-target="#modal-block-normal-{{product.id}}" href="{% url 'eshopapp:adminproductcategorydelete' product.id %}"  title="Delete">
+                                        <i class="fa fa-fw fa-times text-danger"></i>
+                                        
+                                    </a>
+                                </td>
+                            </tr>
+
+
+                               <!-- Normal Block Modal -->
+    <div class="modal" id="modal-block-normal-{{product.id}}" tabindex="-1" role="dialog" aria-labelledby="modal-block-normal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="block block-rounded block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Modal Title</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <form method="POST" action="{% url 'eshopapp:adminproductcategorydelete' product.id %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <h5 class="mb-15">Are you sure you want to delete '{{product.title}}'?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-success text-left">Confirm</button>
+                            <button type="button" class="btn btn-danger text-left" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Normal Block Modal -->
+                                
+                            {% endfor %}
+                            
+                           
+                        </tbody>
+                    </table>
+                </div>
+                <!-- END All Products Table -->
+
+                <!-- Pagination -->
+                <nav aria-label="Photos Search Navigation">
+                    {% if is_paginated %}
+                    <ul class="pagination pagination-sm justify-content-end mt-2">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" aria-label="Previous">
+                                Prev
+                            </a>
+                        </li>
+                        {% else %}
+
+                        <li class="page-item disabled">
+                            <a class="page-link" label="Previous">
+                                Prev
+                            </a>
+                        </li>
+                        {%endif%}
+
+                        {% for i in paginator.page_range %}
+                        {% if page_obj.number == i %}
+                        <li class="page-item active">
+                            <a class="page-link" >{{i}} <span class="sr-only">(current)</span>
+                            </a> </li>
+                            {% else %}
+                           <li class="page-item"> <a class="page-link" href="?page={{ i }}" >{{i}}  </a>  </li>
+
+                            {%endif%}
+                            {%endfor%}
+                      
+                            {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                Next
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link "  aria-label="Next">
+                                Next
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                    {% endif %}
+                </nav>
+                <!-- END Pagination -->
+            </div>
+        </div>
+        <!-- END All Products -->
+    </div>
+    <!-- END Page Content -->
+</main>
+<!-- END Main Container -->
+
+
+
+{%endblock%}

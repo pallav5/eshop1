@@ -1,0 +1,339 @@
+    
+   
+   {% extends 'admintemplates/adminbase.html' %}
+   {% load humanize %}
+   {% block content %} 
+   
+    <!-- Main Container -->
+    <main id="main-container">
+        <!-- Page Content -->
+        <div class="content">
+            <!-- Quick Overview -->
+            <div class="row">
+                <div class="col-6 col-lg-3">
+                    <a class="block block-rounded block-link-shadow text-center" href="be_pages_ecom_orders.html">
+                        <div class="block-content block-content-full">
+                            <div class="font-size-h2 text-primary">35</div>
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p class="font-w600 font-size-sm text-muted mb-0">
+                                Pending
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                        <div class="block-content block-content-full">
+                            <div class="font-size-h2 text-dark">120</div>
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p class="font-w600 font-size-sm text-muted mb-0">
+                                Today
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                        <div class="block-content block-content-full">
+                            <div class="font-size-h2 text-dark">260</div>
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p class="font-w600 font-size-sm text-muted mb-0">
+                                Yesterday
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                        <div class="block-content block-content-full">
+                            <div class="font-size-h2 text-dark">69841</div>
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p class="font-w600 font-size-sm text-muted mb-0">
+                                This Month
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- END Quick Overview -->
+
+            <!-- All Orders -->
+            <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">All Orders</h3>
+                    <div class="block-options">
+                        <div class="dropdown">
+                            <button type="button" class="btn-block-option" id="dropdown-ecom-filters" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Filters <i class="fa fa-angle-down ml-1"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-ecom-filters">
+                                <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                                    Pending..
+                                    <span class="badge badge-secondary badge-pill">35</span>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                                    Processing
+                                    <span class="badge badge-warning badge-pill">15</span>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                                    For Delivery
+                                    <span class="badge badge-info badge-pill">20</span>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                                    Canceled
+                                    <span class="badge badge-danger badge-pill">72</span>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                                    Delivered
+                                    <span class="badge badge-success badge-pill">890</span>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                                    All
+                                    <span class="badge badge-primary badge-pill">997</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <!-- Search Form -->
+                    <form action="be_pages_ecom_orders.html" method="POST" onsubmit="return false;">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-alt" id="one-ecom-orders-search" name="one-ecom-orders-search" placeholder="Search all orders..">
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-body border-0">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END Search Form -->
+
+                    <!-- All Orders Table -->
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-striped table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 100px;">ID</th>
+                                    <th class="d-none d-sm-table-cell text-center">Submitted</th>
+                                    <th>Status</th>
+                                    <th class="d-none d-xl-table-cell">Customer</th>
+                                    <th class="d-none d-xl-table-cell text-center">Products</th>
+                                    <th class="d-none d-sm-table-cell text-right">Total</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    
+                                    {% for order in orderlist  %}
+                                        
+                                   
+                                        
+                                    <td class="text-center font-size-sm">
+                                        <a class="font-w600" href="{% url 'eshopapp:adminorderdetail' order.id %}">
+                                            <strong>ORDER_{{order.id}}</strong>
+                                        </a>
+                                    </td>
+                                    <td class="d-none d-sm-table-cell text-center font-size-sm">{{order.created_at}}</td>
+                                    <td>
+                                     
+                              
+                                        <div class="form-group">
+                                           
+                                            <select class="form-control-sm w-50 h-50 orderstatus" data-href="{% url 'eshopapp:ajax_product_statuschange' %}" id="one-ecom-order-published-{{order.id}}" data-prod-id="{{product.id}}" name="order-select">
+                                                <option value="0">Change</option>
+                                                <option value="1">Order Received</option>
+                                                <option value="2">Order Processing</option>
+                                                <option value="3">On the way</option>
+                                                <option value="4">Order Completed</option>
+                                                <option value="5">Order Canceled</option>
+                                                
+                                            </select>
+                                        </div>
+                                 
+                                </div>
+                    
+                                    {% if order.order_status == 'Order Received' %}
+                                    <span class="badge badge-info">{{order.order_status}}</span>
+                                   {% elif order.order_status == 'Order Processing' %}
+                                            <span class="badge badge-warning">{{order.order_status}}</span>
+                                   {% elif order.order_status == 'On the way' %}
+                                            <span class="badge badge-primary">{{order.order_status}}</span>
+                                   {% elif order.order_status == 'Order Completed' %}
+                                            <span class="badge badge-success">{{order.order_status}}</span>
+                                   {% elif order.order_status == 'Order Canceled' %}
+                                            <span class="badge badge-danger">{{order.order_status}}</span>
+                                    {% endif %}
+                                    </td>
+                                    <td class="d-none d-xl-table-cell font-size-sm">
+                                        <a class="font-w600" >{{order.ordered_by}}</a>
+                                    </td>
+                                    <td class="d-none d-xl-table-cell text-center font-size-sm">
+                                        <a class="font-w600" href="be_pages_ecom_order.html">{{order.cart.cartproduct_set.all.count}}</a>
+                                    </td>
+                                    <td class="d-none d-sm-table-cell text-right font-size-sm">
+                                        <strong>Rs. {{order.total|intcomma}}/-</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-alt-secondary" href="{% url 'eshopapp:adminorderdetail' order.id %}" data-toggle="tooltip" title="View">
+                                            <i class="fa fa-fw fa-eye"></i>
+                                        </a>
+                                        <a type="button" class="btn btn-sm btn-alt-danger "  data-toggle="modal" data-target="#modal-block-normal-{{order.id}}"   title="Delete">
+                                            <i class="fa fa-fw fa-times text-danger"></i>
+                                            
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                 <!-- Normal Block Modal -->
+            <div class="modal" id="modal-block-normal-{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="modal-block-normal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="block block-rounded block-themed block-transparent mb-0">
+                            <div class="block-header bg-primary-dark">
+                                <h3 class="block-title">Modal Title</h3>
+                                <div class="block-options">
+                                    <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                        <i class="fa fa-fw fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <form method="POST" action="{% url 'eshopapp:adminorderdelete' order.id %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <h5 class="mb-15">Are you sure you want to delete '{{order}}'?</h5>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-success text-left">Confirm</button>
+                                    <button type="button" class="btn btn-danger text-left" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Normal Block Modal -->
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- END All Orders Table -->
+
+                   <!-- Pagination -->
+                 <div class="container-fluid pt-5">
+                    <div class="row ">
+                       <div class="col-12 text-center">
+                 <nav aria-label="Page navigation example">
+                    {% if is_paginated %}
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item ">
+                            <a class="page-link" tabindex="-1" href="?page={{ page_obj.previous_page_number }}" >
+                                Prev
+                            </a>
+                        </li>
+                        {% else %}
+
+                        <li class="page-item disabled">
+                            <a class="page-link" label="Previous">
+                                Prev
+                            </a>
+                        </li>
+                        {%endif%}
+
+                        {% for i in paginator.page_range %}
+                        {% if page_obj.number == i %}
+                        <li class="page-item active">
+                            <a class="page-link" >{{i}} <span class="sr-only">(current)</span>
+                            </a> </li>
+                            {% else %}
+                           <li class="page-item"> <a class="page-link" href="?page={{ i }}" >{{i}}  </a>  </li>
+
+                            {%endif%}
+                            {%endfor%}
+                      
+                            {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                Next
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link "  aria-label="Next">
+                                Next
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                    {% endif %}
+                </nav>
+                </div></div></div>
+                <!-- END Pagination -->
+                </div>
+            </div>
+            <!-- END All Orders -->
+        </div>
+        <!-- END Page Content -->
+    </main>
+    <!-- END Main Container -->
+    
+    {%endblock%}
+
+    {%block js %}
+
+<script type="text/javascript">
+	$('.orderstatus').change(function(e){
+       
+	  e.preventDefault();
+	  // $('.messagealert').remove();
+	  $this = $(this);
+     
+	  $.ajax({
+        
+	    url: $this.attr('data-href'),
+        
+	    data: {
+	      'id' : $this.attr('data-prod-id'),
+          
+	    },
+	    success: function(data){
+	      $this.prop('checked', !$this.prop('checked'));
+	      $this.prop('checked', !$this.prop('checked'));
+          if ($this.is(':checked')){
+            
+          	$.toast({
+				heading: 'Product Status Changed',
+				text: 'Product status has been Activated',
+				position: 'top-right',
+				loaderBg:'#fec107',
+				icon: 'success',
+				hideAfter: 3500,
+				stack: 6
+			});
+          }
+          else {
+      	 	$.toast({
+	            heading: 'Product Status Changed',
+				text: 'Product status has been Deactivated',
+				position: 'top-right',
+				loaderBg:'#fec107',
+				icon: 'error',
+				hideAfter: 3500,
+				stack: 6
+	        });
+        	}
+	    }
+	  });
+	});
+</script>
+
+{%endblock%}

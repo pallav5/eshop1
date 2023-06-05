@@ -1,0 +1,92 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+
+
+{% block css %}
+
+
+{% endblock css %}
+    
+{% block content %}
+
+ <!-- Breadcrumb Section Begin -->
+ <div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text">
+                    <a href="#"><i class="fa fa-home"></i> Home</a>
+                    <span>Login</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb Form Section Begin -->
+
+<!-- Register Section Begin -->
+<div class="register-login-section spad p-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="login-form">
+                    <h2>Login</h2>
+                    <form method="post">
+                        <p class="m-t-40">
+                            {{ form.non_field_errors }}
+                            {% if error %}
+                            <p class="text-danger mt-2 p-l-55">**{{error}}</p>
+                            {% endif %}
+                        </p>
+                        {% csrf_token %}
+                        <div class="group-input">
+                            <label for="username">Username *</label>
+                            {{form.username}}
+                        </div>
+                        <div class="group-input">
+                            <label for="pass">Password *</label>
+                            {{form.password}}
+                        </div>
+                        <div class="group-input gi-check">
+                            <div class="gi-more">
+                                <label for="save-pass">
+                                    Save Password
+                                    <input type="checkbox" id="save-pass">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <a href="{% url 'eshopapp:passwordforgot' %}" class="forget-pass">Forget your Password</a>
+                            </div>
+                        </div>
+                        <button type="submit" class="site-btn login-btn">Sign In</button>
+                    </form>
+                    <div class="switch-login">
+                        <a href="{% url 'eshopapp:customerregistration' %}" class="or-login">Or Create An Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Register Form Section End -->
+    
+{% endblock content %}
+
+
+{% block js %}
+
+<script>
+   
+   $.toast({
+				heading: 'Product Status Changed',
+				text: 'Product status has been Activated',
+				position: 'top-right',
+				loaderBg:'#fec107',
+				icon: 'success',
+				hideAfter: 3500,
+				stack: 6
+			});
+</script>
+    
+{% endblock js %}
+    
+    
