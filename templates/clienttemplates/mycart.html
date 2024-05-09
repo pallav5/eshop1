@@ -3,68 +3,381 @@
 {% block title %} My cart{% endblock %}
 {% load humanize %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-8">
-            <h4>Items in my cart</h4><hr>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>SN</th>
-                        <th>Product</th>
-                        <th>Rate</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cp in cart.cartproduct_set.all %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{cp.product.title}}</td>
-                        <td>{{cp.rate}}</td>
-                        <td>{{cp.quantity}}</td>
-                        <td>{{cp.subtotal}}/-</td>
-                        <td>
-
-                       
-                           
-                            <a href="{% url 'eshopapp:managecart' cp.id %}?action=inc" class="btn btn-primary"> + </a>
-                            <a href="{% url 'eshopapp:managecart' cp.id %}?action=dcr" class="btn btn-warning"> - </a>
-                            <a href="{% url 'eshopapp:managecart' cp.id %}?action=rmv" class="btn btn-danger"> x </a>
-                           
-                            
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <th colspan="4" class="text-right">Total</th>
-                        <th> 
-                        {% if total %}
-                            
-                      
-                             Rs. {{total|intcomma}}/-  {% endif %}</th>
-                        {% if cart.cartproduct_set.all %}
-                        
-                          
-                        
-                        <th><a href="{% url 'eshopapp:emptycart' %}">Empty Cart</a></th>
-                        
-                        {% endif %}
-                    </tr>
-                    {% if cart.cartproduct_set.all %}
-                    <tr>
-                        {% comment %}
-                          
-                        
-                        <th><a class="btn btn-info" href="{% url 'eshopapp:checkout' %}"> Checkout </a></th>
-                    </tr>
-                    {% endcomment %}
-                    {% endif %}
-                </tbody>
-            </table>
+  <!-- Breadcrumb Section Begin -->
+  <div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text product-more">
+                    <a href="./home.html"><i class="fa fa-home"></i> Home</a>
+                    <a href="./shop.html">Shop</a>
+                    <span>Shopping Cart</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<!-- Breadcrumb Section Begin -->
+
+<!-- Shopping Cart Section Begin -->
+<section class="shopping-cart spad p-3 ">
+    <div class="container">
+        <div class="row">
+            
+            {% if total %}
+                
+            
+                
+            <div class="col-lg-12 ">
+                <div class="cart-table shadow mb-3">
+                    <table  id="table-id">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th class="p-name">Product Name</th>
+                                <th>Stock</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th><i class="ti-close"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for cp in cart.cartproduct_set.all  %}
+                                
+                          
+                                
+                            <tr >
+                                <td  class="cart-pic first-row p-0"><img style="height: 100px; object-fit: contain;" src="{{cp.product.image1.url}}" alt=""></td>
+                                <td class="cart-title first-row">
+                                    <h5>{{cp.product.title}}{% if cp.size %}
+                                     <span class="text-success">   '{{cp.size}}' </span>
+                                        {% endif %}</h5>
+                                </td>
+                                <td class="p-price first-row">{{cp.product.instock}}</td>
+                                <td class="p-price first-row">Rs. {{ cp.rate|intcomma }}/-</td>
+                                <td class="qua-col first-row">
+                                    <div class="quantity">
+                                        <div class="pro-qty">
+                                            <span    onClick="product_function(this.id)" pro_quantity="{{cp.quantity}}" max="{{cp.product.instock}}" id="qty-sub{{cp.id}}"  href="{% url 'eshopapp:managecart' cp.id %}?action=dcr" data-url="{% url 'eshopapp:ajaxproquantity' cp.id %}"  class="dec qtybtn">-</span>
+                                            <input id="qty-input"  readonly pro_quantity="{{cp.quantity}}"  max="{{cp.product.instock}}"   type="text" value="{{cp.quantity}}">
+                                            <span  onClick="product_function(this.id)" pro_quantity="{{cp.quantity}}" max="{{cp.product.instock}}" id="qty-add{{cp.id}}"  href="{% url 'eshopapp:managecart' cp.id %}?action=inc" data-url="{% url 'eshopapp:ajaxproquantity' cp.id %}" class="inc qtybtn">+</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="total-price first-row">Rs. {{ cp.subtotal|intcomma }}/-</td>
+                                <td class="close-td first-row"><i id="delete-product" href="{% url 'eshopapp:managecart' cp.id %}?action=rmv" class="ti-close"></i></td>
+                            </tr>
+                          
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="cart-buttons">
+                            <!-- <a href="#" class="primary-btn continue-shop">Continue shopping</a> -->
+                            <a id="update-cart" href="#"  class="primary-btn up-cart">Update cart</a>
+                        </div>
+                        <!-- <div class="discount-coupon">
+                            <h6>Discount Codes</h6>
+                            <form action="#" class="coupon-form">
+                                <input type="text" placeholder="Enter your codes">
+                                <button type="submit" class="site-btn coupon-btn">Apply</button>
+                            </form>
+                        </div> -->
+                    </div>
+                    <div id="total-id" class="col-lg-4 offset-lg-4">
+                        <div class="proceed-checkout">
+                            <ul>
+                                {% if total %}
+                            
+                      
+                                <li class="cart-total">Total <span> Rs. {{total|intcomma}}/- </span></li> {% endif %}</th>
+                       
+                                <!-- <li class="subtotal">Subtotal <span>$240.00</span></li> -->
+                             
+                            </ul>
+                            <a href="{% url 'eshopapp:checkout' %}" class="proceed-btn">PROCEED TO CHECK OUT</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            {% else %}
+            <h4 >
+                Please add atleast one item in your cart!
+            </h4>
+            {%endif%}
+        </div>
+    </div>
+</section>
+<!-- Shopping Cart Section End -->
 {% endblock %}
+
+
+
+{% block js %}
+
+
+<script type="text/javascript">
+
+  
+function product_function(clicked_id)
+  {
+        c_id  = clicked_id;
+      
+      $myvar = '#'+ c_id;
+     
+     
+  }
+    
+    $(document).on('click', '.qtybtn', function(e){
+
+
+        e.stopImmediatePropagation();
+        
+  // $('.orderstatus').change(function(e){
+   
+    
+
+    e.preventDefault();
+    // $('.messagealert').remove();
+    $this = $(this);
+    // $($myvar).css('color', 'red');
+
+    // alert( $this.attr('href'))
+    // let a = $this.find("option:selected").attr('value')
+  //   alert(a );
+  //   $this.prop('checked', !$this.prop('checked'));
+   
+
+
+
+
+    var $button = $(this);
+		var oldValue = $button.parent().find('input').val();
+        var a = $($myvar).attr('max')
+        var b = $($myvar).attr('pro_quantity')
+        var c = a - b
+        var d = $('#qty-input').attr('max')
+      
+        // alert(oldValue)
+        // alert (a)
+        // alert (oldValue)
+        // alert(b)
+        // alert (c)
+		if ($button.hasClass('inc')) {
+
+            // if (c == 0){
+            //     // a.attr('disabled', true);
+            //     alert('max item on cart reached');
+            // }
+			var newVal = parseFloat(oldValue) + 1;
+            if ( Number(c) <=0 ) {
+                // alert(a)
+               
+                $.toast({
+                    heading: 'Stock Lmit',
+                    text: 'Stock limit has been reached',
+                    position: 'top-center',
+                    loaderBg:'#fec107',
+                    icon: 'success',
+                    hideAfter: 3500,
+                    stack: 6
+                    
+                });
+            //    alert($myvar +' > span')
+                // $($myvar > 'span').css('pointer-events', 'none');
+                // alert(d)
+                d.attr('disabled', true);
+                $($myvar).css('color', 'red');
+                $($myvar).css('pointer-events', 'none');
+               
+
+                
+                
+           
+             
+
+            }
+		} else {
+			// Don't allow decrementing below zero
+			if (oldValue > 0) {
+				var newVal = parseFloat(oldValue) - 1;
+                
+			} else {
+				newVal = 0;
+			}
+		}
+		$button.parent().find('input').val(newVal);
+
+
+        
+        $.ajax({
+
+        
+      
+      url: $this.attr('href'),
+      
+      data: {
+        // 'id' : $this.attr('href'),
+        // 'value' : a
+        
+      },
+
+      beforeSend: function () {
+        $($myvar).css('pointer-events', 'none');
+       
+        $('#preloder').show().delay(50).fadeOut("slow");
+        $('.loader').show().fadeOut();
+
+            },
+      success: function(data){
+                
+                $($myvar).css('color', 'red');
+                $($myvar).css('pointer-events', 'auto');
+                Validation2();
+             
+        //   $.toast({
+        //           heading: 'Product Status',
+        //           text: 'Product status has been changed',
+        //           position: 'top-right',
+        //           loaderBg:'#fec107',
+        //           icon: 'success',
+        //           hideAfter: 3500,
+        //           stack: 6
+        //       });
+            
+          $('#table-id').load(' #table-id >*');
+          $('#total-id').load(' #total-id >*');
+        //   $('#preloder').hide();
+        //   $('#.loader').hide();
+
+        $('#refresh-basecart').load(' #refresh-basecart > *');
+         $('#refresh-total').load(' #refresh-total');
+      }
+        
+    })
+
+
+
+
+
+
+ /* Declaring Functions */
+ const Validation2 = () => {
+        var e;
+       
+       
+            $.ajax({
+                'async': false,
+                
+                    url: $(this).attr('data-url'),
+                    // data: {
+                    //   'item_quantity': b,
+                    //   'ajax': 'ajax'
+                    // },
+                    
+
+                    success: function (data) {
+                      alert();
+                        // alert(data.item);
+                        // $('#quickviewmodal').modal('dispose');                        
+                        // var d = data.addedproduct;
+                        // var b = data.addedproductcolor;
+                        // var c = data.addedproductsize;
+                          e = data.addedproductquantity;
+                        // var f = data.addedproductprice;
+                        // var g = data.addedproductimage;
+                        // alert(e)
+                        // $('#addToCart').modal();
+                        // $('#addToCart img').attr('src', f);
+                        // $('#addToCart img').attr('alt', a);
+                        // $('#addToCart .cart-title').text(a + ', color: ' + b + ', size: ' + c + ', quantity: '+ d);
+                        // $('#addToCart .cart-price').text('Rs. ' + e);
+                        // $('#refresh-basecart').load(' #refresh-basecart');
+
+                    },
+                    error: function(){
+                        showFrontendAlert('error', 'Oops something went wrong ! Please refresh the page and try again');
+                    }
+                });}
+
+
+
+
+  });
+</script>
+
+
+<script>
+       
+ 
+  
+       $(document).on('click', '.ti-close', function(e){
+
+        e.preventDefault();
+	  $this = $(this);
+      
+	  $.ajax({
+        
+	    url: $this.attr('href'),
+        
+	    data: {
+	    //   'id' : $this.attr('data-order-id'),
+        //   'value' : a
+          
+	    },
+	    success: function(data){
+	      
+            $.toast({
+                    heading: 'Cart item',
+                    text: 'Cart item has been removed',
+                    position: 'top-right',
+                    loaderBg:'#fec107',
+                    icon: 'success',
+                    hideAfter: 3500,
+                    stack: 6
+                });
+                    $('#table-id').load(' #table-id >*');
+                    $('#total-id').load(' #total-id >*');
+        }
+          
+	  });
+
+        });
+
+
+
+
+</script>
+<script>
+       
+ 
+  
+       $(document).on('click', '#update-cart', function(e){
+
+        e.preventDefault();
+	 
+      
+                    $('#table-id').load(' #table-id >*');
+                    $('#total-id').load(' #total-id >*');
+        }
+          
+	  
+
+       );
+
+
+
+</script>
+
+
+
+
+    
+{% endblock js %}
+    

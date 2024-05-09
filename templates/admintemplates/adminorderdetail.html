@@ -5,21 +5,59 @@
    {% block content %} 
    
     <!-- Main Container -->
-    <main id="main-container">
+    <main  id="main-container">
         <!-- Page Content -->
-        <div class="content">
+        <div  class="content">
             <!-- Quick Overview -->
-            <div class="row">
-                <div class="col-6 col-lg-3">
-                    <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+            <div  class="row">
+                <div  class="col-6 col-lg-3">
+                    <a id="order-status" class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
                         <div class="block-content block-content-full">
+                            {% if adminorderdetail.order_status == 'Order Received' %}
+                            <div class="item item-circle bg-warning-light mx-auto">
+                                <i class="fa fa-angle-down text-success"></i>
+                            </div>
+                            {% elif adminorderdetail.order_status == 'Order Processing' %}
+                            <div class="item item-circle bg-warning mx-auto">
+                                <i class="fa fa-recycle text-danger"></i>
+                            </div>
+                            {% elif adminorderdetail.order_status == 'On the way' %}
+                            <div class="item item-circle bg-primary-light mx-auto">
+                                <i class="fa fa-road text-danger"></i>
+                            </div>
+
+                            {% elif adminorderdetail.order_status == 'Order Completed' %}
                             <div class="item item-circle bg-success-light mx-auto">
+                                <i class="fa fa-check text-success"></i>
+                            </div>
+                            {% elif adminorderdetail.order_status == 'Order Canceled' %}
+                            <div class="item item-circle bg-danger-light mx-auto">
                                 <i class="fa fa-times text-danger"></i>
                             </div>
+                            {% endif %}
                         </div>
                         <div class="block-content py-2 bg-body-light">
-                            <p class="font-w600 font-size-sm text-success mb-0">
-                               {{adminorderdetail.order_status}}
+                            <p style="color: maroon;" class="font-w600 font-size-sm  mb-0">
+                                
+                                    
+                                {{adminorderdetail.order_status}}
+                               
+                               <div class="form-group m-0 p-0">
+                                          
+                                       <p style="font-size: 14px;"> <b> Change: </b></p>
+                                           
+                                <select class="form-control-sm w-50 h-50 orderstatus" data-href="{% url 'eshopapp:ajax_order_statuschange' %}"  data-order-id="{{adminorderdetail.id}}" name="order-select">
+                                    
+                                        
+                                    <option o_id="{{order.id}}" {% if adminorderdetail.order_status == 'Order Received' %} selected{% endif %}    value="Order Received"   >Order Received</option>
+                                    <option o_id="{{order.id}}"  {% if adminorderdetail.order_status == 'Order Processing' %} selected{% endif %}  value="Order Processing">Order Processing</option>
+                                    <option o_id="{{order.id}}" {% if adminorderdetail.order_status == 'On the way' %} selected{% endif %}  value="On the way">On the way</option>
+                                    <option o_id="{{order.id}}"  {% if adminorderdetail.order_status == 'Order Completed' %} selected{% endif %}  value="Order Completed">Order Completed</option>
+                                    <option o_id="{{order.id}}"  {% if adminorderdetail.order_status == 'Order Canceled' %} selected{% endif %}  value="Order Canceled">Order Canceled</option>
+                                    
+                                    
+                                </select>
+                            </div>
                             </p>
                         </div>
                     </a>
@@ -114,7 +152,7 @@
                                     
                                 <tr>
                                     <td class="text-center"><a ><strong>ORDER_{{adminorderdetail.id}}</strong></a></td>
-                                    <td><a href="{% url 'eshopapp:adminproductdetail' p.product.id %}">{{p.product.title}}</a></td>
+                                    <td><a href="{% url 'eshopapp:adminproductdetail' p.product.id %}">{{p.product.title}}</a>, Size: {% for size in p.product.size.all %}{{ size }} {% endfor %}</td>
                                     <td class="text-center">{{p.product.instock}}</td>
                                     <td class="text-center"><strong>{{p.quantity}}</strong></td>
                                     <td class="text-right">Rs {{p.rate}}</td>
@@ -234,3 +272,36 @@
 
     
     {%endblock%}
+
+    
+    {% block js %}
+    <script type="text/javascript">
+        $('body').on('change', '.orderstatus', function(e){
+          
+         e.preventDefault();
+         // $('.messagealert').remove();
+         $this = $(this);
+         let a = $this.find("option:selected").attr('value')
+       //   alert(a );
+       //   $this.prop('checked', !$this.prop('checked'));
+         $.ajax({
+           
+           url: $this.attr('data-href'),
+           
+           data: {
+             'id' : $this.attr('data-order-id'),
+             'value' : a
+             
+           },
+           success: function(data){
+             
+            
+               $('#order-status').load(' #order-status > *');
+           }
+             
+         });
+       });
+   </script>
+    {% endblock js %}
+   
+        

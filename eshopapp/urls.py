@@ -159,6 +159,10 @@ urlpatterns=[
       path('product/<slug:slug>/', ClientProductDetailView.as_view(),
       
               name='clientproductdetail'),
+      
+      path('product/<slug:slug>/', ClientProductDetailView.as_view(),
+      
+              name='clientproductdetail'),
 
       path('product-search/result/', ClientProductSearchListView.as_view(),
       
@@ -184,12 +188,16 @@ urlpatterns=[
          PasswordResetView.as_view(), name="passwordreset"),  
 
         path("add-to-cart-<int:pro_id>/", AddToCartView.as_view(), name="addtocart"),
+        path("ajax-add-to-cart-<int:pro_id>/", AjaxAddToCartView.as_view(), name="ajaxaddtocart"),
+        path("ajax-pro-quantity-<int:pro_id>/", AjaxProductQtyView.as_view(), name="ajaxproquantity"),
+        path("ajax-pro-size-<int:pro_id>/", AjaxProductSizeView.as_view(), name="ajaxprosize"),
+        path("ajax-pro-size-qty/<str:pro_sizeqty>/", ClientProductSizeQuantityView.as_view(), name="ajaxprosizeqty"),
         path("my-cart/", MyCartView.as_view(), name="mycart"),  
         path("manage-cart/<int:cp_id>/", ManageCartView.as_view(), name="managecart"),
 
         path("empty-cart/", EmptyCartView.as_view(), name="emptycart"),
       
-           path("checkout/", CheckoutView.as_view(), name="checkout"),
+        path("checkout/", CheckoutView.as_view(), name="checkout"),
 
        
 ]

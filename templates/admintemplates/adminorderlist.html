@@ -116,12 +116,12 @@
                     <!-- END Search Form -->
 
                     <!-- All Orders Table -->
-                    <div class="table-responsive">
-                        <table class="table table-borderless table-striped table-vcenter">
+                    <div  class="table-responsive">
+                        <table id="order-status"  class="table table-borderless table-striped table-vcenter">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 100px;">ID</th>
-                                    <th class="d-none d-sm-table-cell text-center">Submitted</th>
+                                    <th class="d-none d-sm-table-cell text-center">Received</th>
                                     <th>Status</th>
                                     <th class="d-none d-xl-table-cell">Customer</th>
                                     <th class="d-none d-xl-table-cell text-center">Products</th>
@@ -145,15 +145,18 @@
                                     <td>
                                      
                               
-                                        <div class="form-group">
+                                        <div  class="form-group m-0 p-0">
+                                          
+                                         
                                            
-                                            <select class="form-control-sm w-50 h-50 orderstatus" data-href="{% url 'eshopapp:ajax_product_statuschange' %}" id="one-ecom-order-published-{{order.id}}" data-prod-id="{{product.id}}" name="order-select">
-                                                <option value="0">Change</option>
-                                                <option value="1">Order Received</option>
-                                                <option value="2">Order Processing</option>
-                                                <option value="3">On the way</option>
-                                                <option value="4">Order Completed</option>
-                                                <option value="5">Order Canceled</option>
+                                            <select  style="width: 80%;" class="form-control-sm  h-50 orderstatus" data-href="{% url 'eshopapp:ajax_order_statuschange' %}" id="one-ecom-product-published-{{order.id}}" data-order-id="{{order.id}}" name="order-select">
+                                                
+                                                    
+                                                <option o_id="{{order.id}}" {% if order.order_status == 'Order Received' %} selected{% endif %}    value="Order Received"   >Order Received</option>
+                                                <option o_id="{{order.id}}"  {% if order.order_status == 'Order Processing' %} selected{% endif %}  value="Order Processing">Order Processing</option>
+                                                <option o_id="{{order.id}}" {% if order.order_status == 'On the way' %} selected{% endif %}  value="On the way">On the way</option>
+                                                <option o_id="{{order.id}}"  {% if order.order_status == 'Order Completed' %} selected{% endif %}  value="Order Completed">Order Completed</option>
+                                                <option o_id="{{order.id}}"  {% if order.order_status == 'Order Canceled' %} selected{% endif %}  value="Order Canceled">Order Canceled</option>
                                                 
                                             </select>
                                         </div>
@@ -291,47 +294,38 @@
     {%block js %}
 
 <script type="text/javascript">
-	$('.orderstatus').change(function(e){
+      $('body').on('change', '.orderstatus', function(e){
+	// $('.orderstatus').change(function(e){
        
 	  e.preventDefault();
 	  // $('.messagealert').remove();
 	  $this = $(this);
-     
+      let a = $this.find("option:selected").attr('value')
+    //   alert(a );
+    //   $this.prop('checked', !$this.prop('checked'));
 	  $.ajax({
         
 	    url: $this.attr('data-href'),
         
 	    data: {
-	      'id' : $this.attr('data-prod-id'),
+	      'id' : $this.attr('data-order-id'),
+          'value' : a
           
 	    },
 	    success: function(data){
-	      $this.prop('checked', !$this.prop('checked'));
-	      $this.prop('checked', !$this.prop('checked'));
-          if ($this.is(':checked')){
-            
-          	$.toast({
-				heading: 'Product Status Changed',
-				text: 'Product status has been Activated',
-				position: 'top-right',
-				loaderBg:'#fec107',
-				icon: 'success',
-				hideAfter: 3500,
-				stack: 6
-			});
-          }
-          else {
-      	 	$.toast({
-	            heading: 'Product Status Changed',
-				text: 'Product status has been Deactivated',
-				position: 'top-right',
-				loaderBg:'#fec107',
-				icon: 'error',
-				hideAfter: 3500,
-				stack: 6
-	        });
-        	}
-	    }
+	      
+            $.toast({
+                    heading: 'Product Status',
+                    text: 'Product status has been changed',
+                    position: 'top-right',
+                    loaderBg:'#fec107',
+                    icon: 'success',
+                    hideAfter: 3500,
+                    stack: 6
+                });
+            $('#order-status').load(' #order-status > *');
+        }
+          
 	  });
 	});
 </script>

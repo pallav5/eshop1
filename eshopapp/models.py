@@ -76,7 +76,7 @@ MAIN_CATEGORY = (
 class Size(TimeStamp):
     standard = models.CharField(max_length=200, choices=SIZE)
     title = models.CharField(max_length=200)
-
+    shortname = models.CharField(max_length=10,default='none')
     class Meta:
         unique_together = ('standard', 'title')
 
@@ -122,7 +122,7 @@ class Product(TimeStamp):
     instock = models.PositiveIntegerField(default=0)
     color = models.ManyToManyField(
         Color,  null=True, blank=True)
-    size = models.ManyToManyField(
+    size = models.ManyToManyField( 
         Size,  null=True, blank=True)
     marked_price = models.IntegerField(max_length=19)
     selling_price = models.IntegerField(max_length=19,  null=True, blank=True)
@@ -151,7 +151,17 @@ class Product(TimeStamp):
     def __str__(self):
         return self.title
     
+
+class ProductSizeStock(TimeStamp):
     
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE)
+    instock = models.PositiveIntegerField(default=0)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.product.title
+        
 
 
 # class ProductImage(TimeStamp):
@@ -189,6 +199,8 @@ class CartProduct(models.Model):
     rate = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField()
     subtotal = models.PositiveIntegerField()
+    size = models.CharField(max_length=200,null=True, blank=True, default=None) 
+    color = models.CharField(max_length=200, null=True, blank=True, default=None) 
 
     def __str__(self):
         return "Cart: " + str(self.cart.id) + " CartProduct: " + str(self.id)

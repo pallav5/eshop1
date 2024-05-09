@@ -64,7 +64,7 @@
         navText: ['<i class="ti-angle-left"></i>', '<i class="ti-angle-right"></i>'],
         smartSpeed: 1200,
         autoHeight: false,
-        autoplay: true,
+        autoplay: false,
         responsive: {
             0: {
                 items: 1,
@@ -225,26 +225,57 @@
 
     $('.product-pic-zoom').zoom();
     
-    /*-------------------
-		Quantity change
-	--------------------- */
-    var proQty = $('.pro-qty');
-	proQty.prepend('<span class="dec qtybtn">-</span>');
-	proQty.append('<span class="inc qtybtn">+</span>');
-	proQty.on('click', '.qtybtn', function () {
-		var $button = $(this);
-		var oldValue = $button.parent().find('input').val();
-		if ($button.hasClass('inc')) {
-			var newVal = parseFloat(oldValue) + 1;
-		} else {
-			// Don't allow decrementing below zero
-			if (oldValue > 0) {
-				var newVal = parseFloat(oldValue) - 1;
-			} else {
-				newVal = 0;
-			}
-		}
-		$button.parent().find('input').val(newVal);
-	});
+    // /*-------------------
+	// 	Quantity change
+	// --------------------- */
+
+       
+
+    // var proQty = $('.pro-qty');
+	// // proQty.prepend('<span class="dec qtybtn">-</span>');
+	// // proQty.append('<span class="inc qtybtn">+</span>');
+	// proQty.on('click', '.qtybtn', function () {
+       
+	// 	var $button = $(this);
+	// 	var oldValue = $button.parent().find('input').val();
+    //     var a = $('#qty-input').attr('max')
+    //     var b = $('#qty-input').attr('pro_quantity')
+    //     var c = a - b
+      
+    //     // alert (c)
+	// 	if ($button.hasClass('inc')) {
+
+    //         // if (c == 0){
+    //         //     // a.attr('disabled', true);
+    //         //     alert('max item on cart reached');
+    //         // }
+	// 		var newVal = parseFloat(oldValue) + 1;
+    //         if (oldValue >= Number(c)) {
+    //             $.toast({
+    //                 heading: 'Stock Limit',
+    //                 text: 'Stock limit has been reached',
+    //                 position: 'top-center',
+    //                 loaderBg:'#fec107',
+    //                 icon: 'success',
+    //                 hideAfter: 3500,
+    //                 stack: 6
+    //             });
+    //             // alert('');
+    //             a.attr('disabled', true);
+              
+           
+             
+
+    //         }
+	// 	} else {
+	// 		// Don't allow decrementing below zero
+	// 		if (oldValue > 0) {
+	// 			var newVal = parseFloat(oldValue) - 1;
+	// 		} else {
+	// 			newVal = 0;
+	// 		}
+	// 	}
+	// 	$button.parent().find('input').val(newVal);
+	// });
 
 })(jQuery);

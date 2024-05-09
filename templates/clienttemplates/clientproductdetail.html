@@ -1,5 +1,5 @@
 {% extends 'clienttemplates/clientbase.html' %}
-
+{% load humanize %}
 
 {% block css %}
     <style>
@@ -41,11 +41,11 @@
 
 <!-- Product Shop Section Begin -->
 <section class="product-shop spad p-3 page-details">
-    <div class="container">
+    <div  class="container">
         <div class="row">
    
 
-            <div class="col-lg-10">
+            <div  class="col-lg-10">
                 <div class="row">
                     <div class="col-lg-5">
                         <div class="product-pic-zoom ">
@@ -98,7 +98,7 @@
                                 </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div  class="col-lg-6">
                         <div class="product-details">
                             <div class="pd-title">
                                 <!-- <span>oranges</span> -->
@@ -119,7 +119,7 @@
                             {% if productdetail.selling_price %}
                                 
                            
-                                    <h4>Rs. {{productdetail.selling_price}} {% else %} <h4> Rs. {{productdetail.marked_price}}</h4>  {% endif %}  {% if productdetail.selling_price %} <span> Rs. {{productdetail.marked_price}}</span> {%endif%}</h4>
+                                    <h4>Rs. {{productdetail.selling_price|intcomma}}/- {% else %} <h4> Rs. {{productdetail.marked_price|intcomma}}/-</h4>  {% endif %}  {% if productdetail.selling_price %} <span> Rs. {{productdetail.marked_price}}</span> {%endif%}</h4>
                             </div>
                             <div class="pd-color">
                                 <h6>Color :</h6>
@@ -145,35 +145,45 @@
                                     </div>
                                 </div> -->
                             </div>
-                            {% if productdetail.size.all %}
+                            <div>
+                                
+                                <!-- {% for a in pro_size_stock %}
+
+                                <h1>{{a.size}}</h1>
+                                    
+                                {% endfor %}
+                                     -->
+                            </div>
+                            <!-- {% if productdetail.size.all %} -->
                             <div class="pd-size-choose mb-0">
                                 <div  class="pd-color">
                               <h6  class="pt-2 text-success">Sizes : </h6>  </div>
                                 
-                                {% for size  in productdetail.size.all %}
-                                <div class="sc-item">
-                                    <input type="radio" id="sm-size">
+                                {% for size  in pro_size_stock %}
+                                <div id="sizeid" product-kwargs = "{{ productdetail.title }}" class="sc-item" data-url="{% url 'eshopapp:ajaxprosizeqty' size.size %}">
+                                    <input   type="radio" id="sm-size">
+                                   
                                     
-                               
+                                    <label for=" sm-size ">{{size.size.shortname}}</label>
                                     
                                     {% if "Extra Small" == size.title %}
 
-                                  <label for=" xs-size ">xs</label>
+                                  <label for=" xs-size ">XS</label>
                                  
-                                 {% elif "Small" == size.title %}
-                                 <label for=" sm-size ">s</label>
+                                 {% elif "Small" == size.size %}
+                                 <label for=" sm-size ">S</label>
 
                                  {% elif "Medium" == size.title %}
 
-                                  <label for=" md-size ">m</label>
+                                  <label for=" md-size ">M</label>
 
                                   {% elif "Large" == size.title %}
 
-                                  <label for=" lg-size ">l</label>
+                                  <label for=" lg-size ">L</label>
                                   
                                   {% elif "Extra Large" == size.title %}
 
-                                  <label for=" xl-size ">xl</label>
+                                  <label for=" xl-size ">XL</label>
 
                                   
                                  
@@ -185,11 +195,26 @@
                                 </div>
 
                                 {% endfor %}
+                                    
+                               
                               
                             </div>
-                            {%endif%}
+                            <!-- {%endif%} -->
+                            <div  class="quantity item_quantity">
+                                <div  id="pro-qty" class="pro-qty">
+                                    <span class="dec qtybtn">-</span>
+                                    <input   readonly id="qty-input" name="quantity" class="qty-input" max="{{productdetail.instock}}" type="text"  value="1" pro_quantity="{{pro_quantity}}">
+                                   
+                                    <span data-url="{% url 'eshopapp:ajaxproquantity' productdetail.id %}" class="inc qtybtn">+</span>
+                                </div>
+                                 <button id="addtocartbtn" data-prod-id="{{productdetail.id}}"  class="add-to-cart primary-btn pd-cart" data-url="{% url 'eshopapp:ajaxaddtocart' productdetail.id %}" d-url="{% url 'eshopapp:ajaxproquantity' productdetail.id %}" data-quantity-source='productdetail'>
+                                Add To Cart
+                            </button>
+                           
+                            </div>
                             <div class="">
                                 <h5 style="color: maroon; font-weight: 700;" > Stock :  {{productdetail.instock}} </h5>
+                                <h5 style="color: maroon; font-weight: 700;" > This Size-Stock : <span id="thissize"> </span>  </h5>
                             </div>
                             <ul class="pd-tags">
                                 <li><span>CATEGORIES</span>: {% for category in productdetail.category.all  %}
@@ -235,8 +260,10 @@
                                 <img src="img/product-single/tab-desc.jpg" alt="">
                             </div>
                         </div>
+
                     </div>
                 </div>
+                
                 <div class="tab-pane fade pl-3 " id="tab-2" role="tabpanel">
                     <div class="specification-table ">
 
@@ -258,7 +285,7 @@
                             <tr>
                                 <td class="p-catagory">Marked Price</td>
                                 <td>
-                                    <div class="p-price">Rs. {{productdetail.marked_price}}</div>
+                                    <div class="p-price">Rs. {{productdetail.marked_price| intcomma}}/-</div>
                                 </td>
                             </tr>
 
@@ -271,7 +298,7 @@
                               <tr> 
                                 <td class="p-catagory">Selling Price</td>
                                 <td>
-                                    <div class="p-price">Rs. {{productdetail.selling_price}}</div>
+                                    <div class="p-price">Rs. {{productdetail.selling_price|intcomma}}/-</div>
                                 </td>
                             </tr>
                             {% endif %}
@@ -553,7 +580,267 @@
             
     </div>
 </div>
+
+
+
+
 <!-- Related Products Section End -->
     
 {% endblock productdetail %}
+
+
+
+{% block js %}
+
+
+
+
+<script>
+
+// z = "{{request.session.item_quantity}}";
+
+// alert(z);
+/*-------------------
+		Quantity change
+	--------------------- */
+
+       
+
+    var proQty = $('.pro-qty');
+	// proQty.prepend('<span class="dec qtybtn">-</span>');
+	// proQty.append('<span class="inc qtybtn">+</span>');
+	proQty.on('click', '.qtybtn', function () {
+       
+		var $button = $(this);
+		var oldValue = $button.parent().find('input').val();
+        var a = $('#qty-input').attr('max')
+        var b = $('#qty-input').attr('pro_quantity')
+        alert(a);
+       
+        
+        // alert (c)
+		if ($button.hasClass('inc')) {
+         
+                // alert($(this).attr('data-url'))
+                var e;
+            $.ajax({
+                'async': false,
+
+                    url: $(this).attr('data-url'),
+                    data: {
+                      'item_quantity': b,
+                      'ajax': 'ajax'
+                    },
+
+                    success: function (data) {
+                        // alert(data.item);
+                        // $('#quickviewmodal').modal('dispose');                        
+                        // var d = data.addedproduct;
+                        // var b = data.addedproductcolor;
+                        // var c = data.addedproductsize;
+                          e = data.addedproductquantity;
+                        // var f = data.addedproductprice;
+                        // var g = data.addedproductimage;
+                        // alert(e)
+                        // $('#addToCart').modal();
+                        // $('#addToCart img').attr('src', f);
+                        // $('#addToCart img').attr('alt', a);
+                        // $('#addToCart .cart-title').text(a + ', color: ' + b + ', size: ' + c + ', quantity: '+ d);
+                        // $('#addToCart .cart-price').text('Rs. ' + e);
+                        // $('#refresh-basecart').load(' #refresh-basecart');
+
+                    },
+                    error: function(){
+                        showFrontendAlert('error', 'Oops something went wrong ! Please refresh the page and try again');
+                    }
+                });
+
+
+
+
+
+
+
+
+            
+
+            // if (c == 0){
+            //     // a.attr('disabled', true);
+            //     alert('max item on cart reached');
+            // }
+            // alert(e);
+            // alert(oldValue);
+            f = a-e;
+			var newVal = parseFloat(oldValue) + 1;
+            if (oldValue >= Number(f)) {
+                $.toast({
+                    heading: 'Stock Limit',
+                    text: 'Stock limit has been reached',
+                    position: 'top-center',
+                    loaderBg:'#fec107',
+                    icon: 'success',
+                    hideAfter: 3500,
+                    stack: 6
+                });
+                // alert('');
+                // $('.inc').css("cursor","not-allowed");
+                a.attr('disabled', true);
+               
+              
+           
+             
+
+            }
+		} 
+
+
+        // else {
+		// 	// Don't allow decrementing below zero
+		// 	if (oldValue > 0) {
+		// 		var newVal = parseFloat(oldValue) - 1;
+		// 	} else {
+		// 		newVal = 0;
+		// 	}
+		// }
+        
+        else {
+			// Don't allow decrementing below one
+			if (oldValue == 1) {
+				var newVal = parseFloat(oldValue);
+			} else {
+				newVal = parseFloat(oldValue)-1;
+			}
+		}
+		$button.parent().find('input').val(newVal);
+	});
+
+
+
+// document.getElementById("addtocartbtn").disabled = true;
+
+
+</script>
+
+<script>
+    
+
+$('body').on('click', '#addtocartbtn', function(e){
+        var a = $('#qty-input').attr('max')
+        var b = $('#qty-input').attr('pro_quantity')
+        // var size = $('#sizeid .active').text()
+        // var c = a - b
+        // alert(size)
+
+            var e;
+            $.ajax({
+                'async': false,
+
+                    url: $(this).attr('d-url'),
+                    data: {
+                      'item_quantity': b,
+                      'ajax': 'ajax',
+                    //   'size': size
+                    },
+
+                    success: function (data) {
+                        // alert(data.item);
+                        // $('#quickviewmodal').modal('dispose');                        
+                        // var d = data.addedproduct;
+                        // var b = data.addedproductcolor;
+                        // var c = data.addedproductsize;
+                          e = data.addedproductquantity;
+                        // var f = data.addedproductprice;
+                        // var g = data.addedproductimage;
+                        // alert(e)
+                        // $('#addToCart').modal();
+                        // $('#addToCart img').attr('src', f);
+                        // $('#addToCart img').attr('alt', a);
+                        // $('#addToCart .cart-title').text(a + ', color: ' + b + ', size: ' + c + ', quantity: '+ d);
+                        // $('#addToCart .cart-price').text('Rs. ' + e);
+                        // $('#refresh-basecart').load(' #refresh-basecart');
+
+                    },
+                    error: function(){
+                        showFrontendAlert('error', 'Oops something went wrong ! Please refresh the page and try again');
+                    }
+                });
+
+        // alert(e);        
+        c = a-e;
+        if (c <= 0){
+            $.toast({
+                    heading: 'Stock Limit',
+                    text: 'Stock limit has been reached',
+                    position: 'top-center',
+                    loaderBg:'#fec107',
+                    icon: 'success',
+                    hideAfter: 3500,
+                    stack: 6
+                });
+        $('#addtocartbtn').prop('disabled', true);
+    
+        $('#addtocartbtn').css("cursor","not-allowed");
+      
+        }
+    });
+</script>
+
+
+<!-- <script>
+    
+
+$('body').on('click', '#sizeid', function(e){
+
+    e.preventDefault();
+  alert($(this).text());
+  
+    
+
+        
+    });
+</script>
+ -->
+
+<script>
+    var data = new FormData();
+    $('html').on('click', '#sizeid', function(e){
+    //   data.append('action', 'toggle_button')
+    //   data.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+    // alert($(this).text());
+    e.preventDefault();
+    var a = $(this).text();
+    pk = $(this).attr('product-kwargs') 
+    // alert(pk)
+    // alert($(this).attr('data-url'));
+    var size_name = $('#sizeid .active').text()
+    var thissize = document.getElementById("thissize");
+    //   data.append('size', $(this).text())
+      $.ajax({
+            'async': false,
+        //    type: 'GET',
+           url: $(this).attr('data-url'),
+        //    data: data,
+        dataType: "json",
+           data: {
+                    //   'productsize': a,
+                      'product-kwargs': pk,
+                      'ajax': 'ajax',
+                    //   'size': size
+                    },
+        //    cache: false,
+        //    processData: false,
+        //    contentType: false,
+        //    enctype: 'multipart/form-data',
+
+        success: function(resp){
+        // alert (size_name + ' : stock ' + resp.t_size_stock );
+        thissize.innerHTML  = resp.t_size_stock;
+    }
+      })
+    })
+    </script>
+
+{% endblock js %}
+
+
     

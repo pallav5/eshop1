@@ -58,7 +58,8 @@ class AdminRequiredMixin(object):
         
         
         context['org'] = Organization.objects.first()
-
+        context['orderlist'] = Order.objects.all().order_by('-id')
+        
         
         return context   
 
@@ -126,8 +127,16 @@ class AdminOrganizationDetailView(AdminRequiredMixin,DetailView):
 class AdminOrdersListView(AdminRequiredMixin,ListView):
     model = Order
     template_name = 'admintemplates/adminorderlist.html'
-    context_object_name = 'orderlist'
+    
+    
     paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset1 = Order.objects.all().order_by('-id')
+        context['orderlist'] = queryset1
+        return context
+    
 
 class AdminOrderDetailView(AdminRequiredMixin,DetailView):
     template_name = 'admintemplates/adminorderdetail.html'  
@@ -146,6 +155,7 @@ class AdminOrderDeleteView(AdminRequiredMixin, DeleteView):
 
 
 class AdminDashboardView(AdminRequiredMixin,TemplateView):
+   
     template_name = 'admintemplates/admindashboard.html'
 
 class AdminProductCategoryCreateView(AdminRequiredMixin,CreateView):
@@ -371,18 +381,22 @@ class AjaxProductStatusChangeView(View):
 class AjaxOrderStatusChangeView(View):
     def get(self, request, **kwargs):
         order_id = self.request.GET.get('id')
+        value = self.request.GET.get('value')
+        print(value)
         print(order_id)
-        product = Order.objects.get(id=order_id)
+        order = Order.objects.get(id=order_id)
+        print(order)
+        order.order_status = value
+        order.save()
+        # if product.is_active:
+        #     product.is_active = False
+        #     message = 'Product deactivated'
+        # else:
+        #     product.is_active = True
+        #     message = 'Product activated'
+        # product.save()    
         
-        if product.is_active:
-            product.is_active = False
-            message = 'Product deactivated'
-        else:
-            product.is_active = True
-            message = 'Product activated'
-        product.save()    
-
-        return JsonResponse({'message':message})        
+        return JsonResponse({'message':'Order status changed'})        
     
 
 #Sliders
@@ -445,6 +459,17 @@ class AdminSliderUpdateView(AdminRequiredMixin, UpdateView):
 
 
 #Client Views
+class EcomMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        cart_id = request.session.get("cart_id")
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            if request.user.is_authenticated and request.user.customer:
+                cart_obj.customer = request.user.customer
+                cart_obj.save()
+        return super().dispatch(request, *args, **kwargs)
+    
+
 
 
 class ClientRequiredMixin(object):
@@ -453,14 +478,12 @@ class ClientRequiredMixin(object):
         
         cart_id = self.request.session.get("cart_id", None)
         list1 = []
+        
         if cart_id:
             cart = Cart.objects.get(id=cart_id)
             
             for a in cart.cartproduct_set.all():
-                
                 list1.append(a.subtotal)
-
-            print(cart.cartproduct_set.all().count())
         else:
             cart = None
         
@@ -654,11 +677,28 @@ class ClientProductDetailView(ClientRequiredMixin,DetailView):
     def get_context_data(self, **kwargs):
         
         context = super().get_context_data(**kwargs)
-
+        
         current_product_slug = self.kwargs['slug']
         
         
+        # print('*-/-*-*-*-*-*')
         product = Product.objects.get(slug=current_product_slug)
+        
+        try:
+            product_size_stock = ProductSizeStock.objects.filter(product=product)
+        except:
+            product_size_stock = None
+        print("////////")
+        print(product_size_stock)
+        try:
+            cart_id = self.request.session.get("cart_id", None)
+            cart = Cart.objects.get(id=cart_id)
+            print(cart)
+            pro_quantity = cart.cartproduct_set.get(product__slug=current_product_slug).quantity
+
+        except:
+            pro_quantity  = 0
+
         list = []
         for a in product.category.all():
             # print (a)
@@ -666,9 +706,63 @@ class ClientProductDetailView(ClientRequiredMixin,DetailView):
         # print(list)    
         related_products = Product.objects.exclude(slug=current_product_slug).filter(category__in = list)
         
+        p_size_stock = ProductSizeStock.objects.filter(product=product)
+        for a in p_size_stock:
+            print(a.size)
         context['related_products'] = related_products
-        
+        context['pro_quantity'] = pro_quantity
+        context['pro_size_stock'] = product_size_stock
         return context
+
+
+class ClientProductSizeQuantityView(ClientRequiredMixin, TemplateView):
+    template_name = "clienttemplates/clientproductdetail.html"
+    def get(self, request, *args, **kwargs):
+        print("heyyyyyyyyyyy")
+        print(self.request.GET)
+        # token = request.POST.get('csrfmiddlewaretoken')
+        
+
+        # print (id)
+
+        product = self.request.GET['product-kwargs']
+        print (product)
+        p_size = self.kwargs['pro_sizeqty']
+        print(p_size)
+        try:
+            t_size = ProductSizeStock.objects.get(product__title=product, size__title=p_size)
+            
+            print(t_size.instock)
+            data = {
+            't_size' : t_size.product.title,
+            't_size_stock' : t_size.instock,
+        }
+        except:
+
+            data = {
+            
+        }
+            
+        
+        return JsonResponse(data)    
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.request.GET['product-kwargs']
+        print (product)
+        p_size = self.kwargs['pro_sizeqty']
+        print(p_size)
+        try:
+            t_size = ProductSizeStock.objects.get(product__title=product, size__title=p_size)
+            
+            print(t_size.instock)
+        except:
+            pass    
+            context['t_size'] = t_size.instock
+            
+            return context
+
 
 
 
@@ -727,24 +821,219 @@ class CustomerProfileView(ClientRequiredMixin,TemplateView):
 
 #Cart
 
-class EcomMixin(object):
-    def dispatch(self, request, *args, **kwargs):
-        cart_id = request.session.get("cart_id")
-        if cart_id:
-            cart_obj = Cart.objects.get(id=cart_id)
-            if request.user.is_authenticated and request.user.customer:
-                cart_obj.customer = request.user.customer
-                cart_obj.save()
-        return super().dispatch(request, *args, **kwargs)
-    
+
+
+
+
+
 
     
-class AddToCartView(ClientRequiredMixin, TemplateView):
+class AjaxProductQtyView(ClientRequiredMixin, TemplateView):
     template_name = "clienttemplates/addtocart.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get(self, request, *args, **kwargs):
+        print('hello') 
+        cart_id = self.request.session.get("cart_id", None)
+    
+        if cart_id:
+            
+            
+
+           
+
+            product_id = self.kwargs['pro_id']
+            product_obj = Product.objects.get(id=product_id)
+            cart_obj = Cart.objects.get(id=cart_id)
+            this_product_in_cart = cart_obj.cartproduct_set.filter(
+                    product=product_obj)
+            
+            # x = CartProduct.objects.filter(quantity=product_obj)
+            print('/////////////////////////////////////////////////////////')
+            # print()
+
+            a = this_product_in_cart.last()
+            if a:
+                qty = a.quantity    
+            
+            else:
+                qty = 0
+        else:
+            qty = 0
+       
+        
+        print(qty)
+
+        
+
+        return JsonResponse({
+            'message': ' has been added to your cart',
+            # 'addedproduct': product_obj.title,
+            # 'addedproductcolor': product_obj.color.title,
+            # 'addedproductsize': product_obj.size.title,
+            'addedproductquantity': qty,
+            # 'addedproductprice': cartproduct.rate,
+            # 'addedproductimage': product_obj.image1.url
+        })    
+    
+
+
+
+class AjaxProductSizeView(ClientRequiredMixin, TemplateView):
+    template_name = "clienttemplates/addtocart.html"
+
+    def get(self, request, *args, **kwargs):
+        print('hello') 
+        cart_id = self.request.session.get("cart_id", None)
+    
+        if cart_id:
+            
+            
+
+           
+
+            product_id = self.kwargs['pro_id']
+            product_obj = Product.objects.get(id=product_id)
+            cart_obj = Cart.objects.get(id=cart_id)
+            this_product_in_cart = cart_obj.cartproduct_set.filter(
+                    product=product_obj)
+            
+            # x = CartProduct.objects.filter(quantity=product_obj)
+            print('size*******size*****size*******')
+            # print()
+
+            a = this_product_in_cart.last()
+            if a:
+                size = a.product.size.all()
+                for s in size:
+                    print(s)   
+            
+            else:
+                # qty = 0
+                pass
+        else:
+            # qty = 0
+            pass
+       
+        
+        # print(qty)
+
+        
+
+        return JsonResponse({
+            'message': ' has been added to your cart',
+            # 'addedproduct': product_obj.title,
+            # 'addedproductcolor': product_obj.color.title,
+            # 'addedproductsize': product_obj.size.title,
+            # 'addedproductquantity': size,
+            # 'addedproductprice': cartproduct.rate,
+            # 'addedproductimage': product_obj.image1.url
+        })    
+
+
+class AjaxAddToCartView(ClientRequiredMixin, TemplateView):
+    template_name = "clienttemplates/addtocart.html"
+
+    def get(self, request, *args, **kwargs):
+        # context = super().get_context_data(**kwargs)
         # get product id from requested url
+        product_id = self.kwargs['pro_id']
+        # get product
+        item_quantity = int(request.GET.get('item_quantity'))
+        product_obj = Product.objects.get(id=product_id)
+        print('111111111111111111111111111')
+        print(request.GET.get)
+        size = request.GET.get('size')
+        print(size)
+
+        print(product_obj, product_id, item_quantity)
+        # check if cart exists
+        cart_id = self.request.session.get("cart_id", None)
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            this_product_in_cart = cart_obj.cartproduct_set.filter(
+                product=product_obj)
+            
+          
+            
+            # item already exists in cart
+            if this_product_in_cart.exists():
+                print('909090909090')
+                cartproduct = this_product_in_cart.filter(cart=product_obj)
+                
+                print(cartproduct)
+                print(this_product_in_cart)
+                if cartproduct.size==size:
+                    cartproduct.quantity += item_quantity
+                    if product_obj.selling_price and (product_obj.selling_price != 0) :
+                        cartproduct.subtotal = product_obj.selling_price * cartproduct.quantity
+                        cartproduct.rate = product_obj.selling_price
+                        cartproduct.save()
+                        cart_obj.total += (product_obj.selling_price * item_quantity)
+                        cart_obj.save()
+                        
+                    else:
+                        cartproduct.subtotal = product_obj.marked_price * cartproduct.quantity
+                        cartproduct.rate = product_obj.marked_price   
+                        cartproduct.save()
+                        cart_obj.total += (product_obj.marked_price * item_quantity)
+                        cart_obj.save()
+
+                else:
+                    if product_obj.selling_price and product_obj.selling_price != 0:
+                        cartproduct = CartProduct.objects.create(
+                            cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=(product_obj.selling_price * item_quantity),size=size)
+                        cart_obj.total += (product_obj.selling_price * item_quantity)
+                        cart_obj.save()
+                    else:
+                        cartproduct = CartProduct.objects.create(
+                            cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=(product_obj.marked_price * item_quantity),size=size)
+                        cart_obj.total += (product_obj.marked_price * item_quantity)
+                        cart_obj.save()
+
+
+            # new item is added in cart
+            else:
+                if product_obj.selling_price and product_obj.selling_price != 0:
+                    cartproduct = CartProduct.objects.create(
+                        cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=(product_obj.selling_price * item_quantity),size=size)
+                    cart_obj.total += (product_obj.selling_price * item_quantity)
+                    cart_obj.save()
+                else:
+                    cartproduct = CartProduct.objects.create(
+                        cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=(product_obj.marked_price * item_quantity),size=size)
+                    cart_obj.total += (product_obj.marked_price * item_quantity)
+                    cart_obj.save()
+
+        else:
+            cart_obj = Cart.objects.create(total=0)
+            self.request.session['cart_id'] = cart_obj.id
+            if product_obj.selling_price and product_obj.selling_price != 0:
+                cartproduct = CartProduct.objects.create(
+                    cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=product_obj.selling_price,size=size)
+                cart_obj.total += product_obj.selling_price
+                cart_obj.save()
+            else:    
+                cartproduct = CartProduct.objects.create(
+                    cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=product_obj.marked_price,size=size)
+                cart_obj.total += product_obj.marked_price
+                cart_obj.save()
+
+        return JsonResponse({
+            'message': ' has been added to your cart',
+            'addedproduct': product_obj.title,
+            # 'addedproductcolor': product_obj.color.title,
+            # 'addedproductsize': product_obj.size.title,
+            'addedproductquantity': item_quantity,
+            'addedproductprice': cartproduct.rate,
+            'addedproductimage': product_obj.image1.url
+        })    
+
+
+
+
+class AddToCartView(View):
+    def get(self, request, *args, **kwargs):
+        
         product_id = self.kwargs['pro_id']
         # get product
         product_obj = Product.objects.get(id=product_id)
@@ -803,7 +1092,19 @@ class AddToCartView(ClientRequiredMixin, TemplateView):
                 cart_obj.total += product_obj.marked_price
                 cart_obj.save()
 
-        return context    
+        return JsonResponse({
+            'message': ' has been added to your cart',
+            # 'addedproduct': product_obj.title,
+            # 'addedproductcolor': productsku.color.title,
+            # 'addedproductsize': productsku.size.title,
+            # 'addedproductquantity': item_quantity,
+            # 'addedproductprice': productsku.selling_price,
+            # 'addedproductimage': productsku.productimage_set.first().image.url
+        })        
+
+
+
+
 
 
 
@@ -821,9 +1122,13 @@ class MyCartView( ClientRequiredMixin, TemplateView):
                 
                 list1.append(a.subtotal)
 
-            print(sum(list1))
+
+         
+            # print(sum(list1))
         else:
             cart = None
+
+            
         context['cart'] = cart
         context['total'] = sum(list1)
         return context
@@ -837,11 +1142,14 @@ class EmptyCartView( View):
             cart.cartproduct_set.all().delete()
             cart.total = 0
             cart.save()
+            del self.request.session['cart_id']
         return redirect("eshopapp:mycart")
 
 
 class ManageCartView(View):
     def get(self, request, *args, **kwargs):
+
+        # print('-*--*-/*-/-/-*/*-/*-/*')
         cp_id = self.kwargs["cp_id"]
         action = request.GET.get("action")
         cp_obj = CartProduct.objects.get(id=cp_id)
@@ -901,6 +1209,19 @@ class CheckoutView(ClientRequiredMixin, CreateView):
         if cart_id:
             cart_obj = Cart.objects.get(id=cart_id)
             print(cart_obj)
+            print('????')
+            # print(form.instance)
+            for a in cart_obj.cartproduct_set.all():
+                print(a)
+                
+            #     print(a.quantity)
+            #     e = a.quantity
+            #     d = a.product.instock
+            #     print(d)
+            #     a.product.instock = d-e
+            #     a.product.save()
+            #     a.save()
+   
             form.instance.cart = cart_obj
             form.instance.subtotal = cart_obj.total
             form.instance.discount = 0
