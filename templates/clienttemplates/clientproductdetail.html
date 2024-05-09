@@ -161,10 +161,10 @@
                                 
                                 {% for size  in pro_size_stock %}
                                 <div id="sizeid" product-kwargs = "{{ productdetail.title }}" class="sc-item" data-url="{% url 'eshopapp:ajaxprosizeqty' size.size %}">
-                                    <input   type="radio" id="sm-size">
+                                    <input type="radio" id="sm-size">
                                    
                                     
-                                    <label for=" sm-size ">{{size.size.shortname}}</label>
+                                    <label class=" {% if forloop.counter == 1 %} active {%endif%}"  for=" sm-size ">{{size.size.shortname}} </label>
                                     
                                     {% if "Extra Small" == size.title %}
 
