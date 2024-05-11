@@ -203,7 +203,7 @@
                             <div  class="quantity item_quantity">
                                 <div  id="pro-qty" class="pro-qty">
                                     <span class="dec qtybtn">-</span>
-                                    <input   readonly id="qty-input" name="quantity" class="qty-input" max="{{productdetail.instock}}" type="text"  value="1" pro_quantity="{{pro_quantity}}">
+                                    <input   readonly id="qty-input" name="quantity" class="qty-input" max=" {% if pro_size_stock %} {{pro_size_stock.0.instock}}   {%else%}   {{productdetail.instock}}  {%endif%}" type="text"  value="1" pro_quantity="{{pro_quantity}}">
                                    
                                     <span data-url="{% url 'eshopapp:ajaxproquantity' productdetail.id %}" class="inc qtybtn">+</span>
                                 </div>
@@ -214,7 +214,7 @@
                             </div>
                             <div class="">
                                 <h5 style="color: maroon; font-weight: 700;" > Stock :  {{productdetail.instock}} </h5>
-                                <h5 style="color: maroon; font-weight: 700;" > This Size-Stock : <span id="thissize"> </span>  </h5>
+                                <h5 style="color: maroon; font-weight: 700;" > This Size-Stock : <span id="thissize"> {{pro_size_stock.0.instock}} </span>  </h5>
                             </div>
                             <ul class="pd-tags">
                                 <li><span>CATEGORIES</span>: {% for category in productdetail.category.all  %}
@@ -615,7 +615,8 @@
 		var oldValue = $button.parent().find('input').val();
         var a = $('#qty-input').attr('max')
         var b = $('#qty-input').attr('pro_quantity')
-        alert(a);
+        // alert(a);
+        // alert(b );
        
         
         // alert (c)
@@ -814,6 +815,7 @@ $('body').on('click', '#sizeid', function(e){
     // alert($(this).attr('data-url'));
     var size_name = $('#sizeid .active').text()
     var thissize = document.getElementById("thissize");
+    
     //   data.append('size', $(this).text())
       $.ajax({
             'async': false,
@@ -827,14 +829,17 @@ $('body').on('click', '#sizeid', function(e){
                       'ajax': 'ajax',
                     //   'size': size
                     },
-        //    cache: false,
-        //    processData: false,
-        //    contentType: false,
-        //    enctype: 'multipart/form-data',
+       
 
         success: function(resp){
-        // alert (size_name + ' : stock ' + resp.t_size_stock );
+       
         thissize.innerHTML  = resp.t_size_stock;
+        
+        document.getElementById('qty-input').setAttribute('max', resp.t_size_stock);
+       
+        $('#qty-input').val('1');
+       var thissizemax = $("#qty-input").attr('value');
+        
     }
       })
     })

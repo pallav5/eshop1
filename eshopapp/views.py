@@ -699,6 +699,11 @@ class ClientProductDetailView(ClientRequiredMixin,DetailView):
         except:
             pro_quantity  = 0
 
+        try:
+            pro_quantity_size = cart.cartproduct_set.get(product__slug=current_product_slug).quantity
+            print(str(pro_quantity_size) + '   ualala')
+        except:
+            pass    
         list = []
         for a in product.category.all():
             # print (a)
@@ -711,7 +716,7 @@ class ClientProductDetailView(ClientRequiredMixin,DetailView):
             print(a.size)
         context['related_products'] = related_products
         context['pro_quantity'] = pro_quantity
-        context['pro_size_stock'] = product_size_stock
+        context['pro_size_stock'] = p_size_stock
         return context
 
 
@@ -949,19 +954,19 @@ class AjaxAddToCartView(ClientRequiredMixin, TemplateView):
         # check if cart exists
         cart_id = self.request.session.get("cart_id", None)
         if cart_id:
-            cart_obj = Cart.objects.get(id=cart_id)
+            cart_obj = Cart.objects.get(id=cart_id) 
             this_product_in_cart = cart_obj.cartproduct_set.filter(
                 product=product_obj)
-            
+            print(this_product_in_cart)
           
             
             # item already exists in cart
-            if this_product_in_cart.exists():
+            if this_product_in_cart.exists(): 
                 print('909090909090')
-                cartproduct = this_product_in_cart.filter(cart=product_obj)
+                cartproduct = this_product_in_cart.filter(product=product_obj)
                 
                 print(cartproduct)
-                print(this_product_in_cart)
+                # print(this_product_in_cart) 6
                 if cartproduct.size==size:
                     cartproduct.quantity += item_quantity
                     if product_obj.selling_price and (product_obj.selling_price != 0) :
