@@ -164,7 +164,7 @@
                                     <input type="radio" id="sm-size">
                                    
                                     
-                                    <label class=" {% if forloop.counter == 1 %} active {%endif%}"  for=" sm-size ">{{size.size.shortname}} </label>
+                                    <label class="{% if forloop.counter == 1 %}active{%endif%}"  for=" sm-size ">{{size.size.shortname}}</label>
                                     
                                     {% if "Extra Small" == size.title %}
 
@@ -617,20 +617,26 @@
         var b = $('#qty-input').attr('pro_quantity')
         // alert(a);
         // alert(b );
-       
+        // var v = $("#sizeid label"); 
+
+        var v = $('.pd-size-choose').find("label[class=active]").text();
+
         
-        // alert (c)
+        
+        // alert (v)
 		if ($button.hasClass('inc')) {
          
-                // alert($(this).attr('data-url'))
+                
                 var e;
+                
             $.ajax({
                 'async': false,
 
                     url: $(this).attr('data-url'),
                     data: {
                       'item_quantity': b,
-                      'ajax': 'ajax'
+                      'ajax': 'ajax',
+                      'item_size': v
                     },
 
                     success: function (data) {
@@ -649,6 +655,9 @@
                         // $('#addToCart .cart-title').text(a + ', color: ' + b + ', size: ' + c + ', quantity: '+ d);
                         // $('#addToCart .cart-price').text('Rs. ' + e);
                         // $('#refresh-basecart').load(' #refresh-basecart');
+
+                        s_s = data.t_size_stock
+                        // document.getElementById('qty-input').setAttribute('max', data.t_size_stock);
 
                     },
                     error: function(){
@@ -669,9 +678,10 @@
             //     // a.attr('disabled', true);
             //     alert('max item on cart reached');
             // }
-            // alert(e);
-            // alert(oldValue);
-            f = a-e;
+            alert(e);
+            alert(s_s);
+            f = s_s-e;
+            
 			var newVal = parseFloat(oldValue) + 1;
             if (oldValue >= Number(f)) {
                 $.toast({
@@ -685,7 +695,7 @@
                 });
                 // alert('');
                 // $('.inc').css("cursor","not-allowed");
-                a.attr('disabled', true);
+                s_s.attr('disabled', true);
                
               
            
@@ -726,13 +736,14 @@
     
 
 $('body').on('click', '#addtocartbtn', function(e){
+    e.preventDefault();
         var a = $('#qty-input').attr('max')
         var b = $('#qty-input').attr('pro_quantity')
         // var size = $('#sizeid .active').text()
         // var c = a - b
-        // alert(size)
+        
 
-            var e;
+            var e,t;
             $.ajax({
                 'async': false,
 
@@ -740,16 +751,18 @@ $('body').on('click', '#addtocartbtn', function(e){
                     data: {
                       'item_quantity': b,
                       'ajax': 'ajax',
-                    //   'size': size
+                    
                     },
 
                     success: function (data) {
-                        // alert(data.item);
+                      
                         // $('#quickviewmodal').modal('dispose');                        
                         // var d = data.addedproduct;
                         // var b = data.addedproductcolor;
                         // var c = data.addedproductsize;
                           e = data.addedproductquantity;
+                          t = data.t_size;
+                          alert(t);
                         // var f = data.addedproductprice;
                         // var g = data.addedproductimage;
                         // alert(e)
@@ -766,8 +779,9 @@ $('body').on('click', '#addtocartbtn', function(e){
                     }
                 });
 
-        // alert(e);        
-        c = a-e;
+  
+        // alert(t);
+        c = t-e;
         if (c <= 0){
             $.toast({
                     heading: 'Stock Limit',

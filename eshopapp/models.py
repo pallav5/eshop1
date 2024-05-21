@@ -199,7 +199,8 @@ class CartProduct(models.Model):
     rate = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField()
     subtotal = models.PositiveIntegerField()
-    size = models.CharField(max_length=200,null=True, blank=True, default=None) 
+    size = models.ManyToManyField( 
+        Size,  null=True, blank=True)
     color = models.CharField(max_length=200, null=True, blank=True, default=None) 
 
     def __str__(self):

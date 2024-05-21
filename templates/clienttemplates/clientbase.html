@@ -216,7 +216,13 @@ and (orientation: portrait) {
                                                     <p>Rs. {{cp.rate}} x {{cp.quantity}}</p>
                                                     <h6>{{cp.product.title}} 
                                                     {% if cp.size %}
-                                                    '{{cp.size}}'
+                                                    
+                                                    {% for cp in cp.size.all %}
+                                                        
+                                                    
+                                                        
+                                                    '{{cp}}'
+                                                    {% endfor %}
                                                     {% endif %}
                                                         </h6>
                                                 </div>
@@ -510,6 +516,11 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                         var e = data.addedproductprice;
                         var f = data.addedproductimage;
                         var g = data.addedproductquantity * data.addedproductprice ; 
+                        var t = data.t_size;
+                        var q = data.t_q;
+                        alert(d);
+                        alert(q);
+                        
                         $('#addToCart').modal();
                         $('#addToCart img').attr('src', f);
                         $('#addToCart img').attr('alt', a);
@@ -532,6 +543,28 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         console.log("Error: ", errorMessage);
    }
                 });
+                    
+                var c = t-d;
+                alert(c)
+        if (c <= 0){
+            $.toast({
+                    heading: 'Stock Limit',
+                    text: 'Stock limit has been reached',
+                    position: 'top-center',
+                    loaderBg:'#fec107',
+                    icon: 'success',
+                    hideAfter: 3500,
+                    stack: 6
+                });
+        $('#addtocartbtn').prop('disabled', true);
+    
+        $('#addtocartbtn').css("cursor","not-allowed");
+      
+        }
+
+
+
+
             // }
             // else{
             //     showFrontendAlert('warning', 'Please choose all the options');   

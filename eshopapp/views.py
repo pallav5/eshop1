@@ -475,8 +475,10 @@ class EcomMixin(object):
 class ClientRequiredMixin(object):
 
     def get_context_data(self, **kwargs):
-        
+        # del self.request.session['cart_id']
+
         cart_id = self.request.session.get("cart_id", None)
+        
         list1 = []
         
         if cart_id:
@@ -688,20 +690,20 @@ class ClientProductDetailView(ClientRequiredMixin,DetailView):
             product_size_stock = ProductSizeStock.objects.filter(product=product)
         except:
             product_size_stock = None
-        print("////////")
-        print(product_size_stock)
+        # print("////////")
+        # print(product_size_stock)
         try:
             cart_id = self.request.session.get("cart_id", None)
             cart = Cart.objects.get(id=cart_id)
-            print(cart)
+            # print(cart)
             pro_quantity = cart.cartproduct_set.get(product__slug=current_product_slug).quantity
-
+            print(pro_quantity)
         except:
             pro_quantity  = 0
 
         try:
             pro_quantity_size = cart.cartproduct_set.get(product__slug=current_product_slug).quantity
-            print(str(pro_quantity_size) + '   ualala')
+            # print(str(pro_quantity_size) + '   ualala')
         except:
             pass    
         list = []
@@ -712,8 +714,8 @@ class ClientProductDetailView(ClientRequiredMixin,DetailView):
         related_products = Product.objects.exclude(slug=current_product_slug).filter(category__in = list)
         
         p_size_stock = ProductSizeStock.objects.filter(product=product)
-        for a in p_size_stock:
-            print(a.size)
+        # for a in p_size_stock:
+        #     print(a.size)
         context['related_products'] = related_products
         context['pro_quantity'] = pro_quantity
         context['pro_size_stock'] = p_size_stock
@@ -837,36 +839,49 @@ class AjaxProductQtyView(ClientRequiredMixin, TemplateView):
     template_name = "clienttemplates/addtocart.html"
 
     def get(self, request, *args, **kwargs):
-        print('hello') 
+        # print('hello') 
         cart_id = self.request.session.get("cart_id", None)
+
+        product_id = self.kwargs['pro_id']
+        product_obj = Product.objects.get(id=product_id)
+        i_size = request.GET['item_size']
+            
     
         if cart_id:
-            
+
+            cart_obj = Cart.objects.get(id=cart_id)
+            this_product_in_cart = cart_obj.cartproduct_set.filter(
+                        product=product_obj)    
             
 
            
 
-            product_id = self.kwargs['pro_id']
-            product_obj = Product.objects.get(id=product_id)
-            cart_obj = Cart.objects.get(id=cart_id)
-            this_product_in_cart = cart_obj.cartproduct_set.filter(
-                    product=product_obj)
             
             # x = CartProduct.objects.filter(quantity=product_obj)
             print('/////////////////////////////////////////////////////////')
-            # print()
+            print(i_size)
 
-            a = this_product_in_cart.last()
-            if a:
-                qty = a.quantity    
             
-            else:
+           
+           
+            p_size = 'S'
+            try:
+                a = this_product_in_cart.get(product__title=product_obj.title, size__shortname=i_size)
+                qty = a.quantity    
+            except:
                 qty = 0
+            print('=====>' + str(qty))
+            print(request.GET['item_size'])
+            t_size = ProductSizeStock.objects.get(product__title=product_obj.title, size__shortname=i_size)
+            d = t_size.instock
+            
+                
         else:
             qty = 0
-       
+            d = 0
+            t_size = ProductSizeStock.objects.get(product__title=product_obj.title, size__shortname=i_size)
         
-        print(qty)
+        # print(qty)
 
         
 
@@ -876,6 +891,7 @@ class AjaxProductQtyView(ClientRequiredMixin, TemplateView):
             # 'addedproductcolor': product_obj.color.title,
             # 'addedproductsize': product_obj.size.title,
             'addedproductquantity': qty,
+            't_size_stock': t_size.instock ,
             # 'addedproductprice': cartproduct.rate,
             # 'addedproductimage': product_obj.image1.url
         })    
@@ -943,85 +959,125 @@ class AjaxAddToCartView(ClientRequiredMixin, TemplateView):
         # get product id from requested url
         product_id = self.kwargs['pro_id']
         # get product
+        size = request.GET.get('size')
+        print(request.GET.get)
+        print(size)
         item_quantity = int(request.GET.get('item_quantity'))
         product_obj = Product.objects.get(id=product_id)
         print('111111111111111111111111111')
-        print(request.GET.get)
-        size = request.GET.get('size')
-        print(size)
+        t_size = ProductSizeStock.objects.get(product__id=product_id,size__shortname = size)
+        print(t_size.instock)
+        q = CartProduct.objects.get(product__id=product_id)
+        print(q)
+        try:
+            q = CartProduct.objects.get(product__id=product_id,size__shortname = size)
+            print(q.quantity)
+            t_q = q
+        except:
+            t_q = 0
+
+        
 
         print(product_obj, product_id, item_quantity)
         # check if cart exists
         cart_id = self.request.session.get("cart_id", None)
+        sz = Size.objects.get(shortname = size)
         if cart_id:
             cart_obj = Cart.objects.get(id=cart_id) 
             this_product_in_cart = cart_obj.cartproduct_set.filter(
-                product=product_obj)
+                product=product_obj, size__shortname = size)
             print(this_product_in_cart)
           
             
             # item already exists in cart
             if this_product_in_cart.exists(): 
                 print('909090909090')
-                cartproduct = this_product_in_cart.filter(product=product_obj)
-                
+                cartproduct = this_product_in_cart.filter(cart= cart_obj)
+                # for cartproducts in cartproduct:
                 print(cartproduct)
+                # p_s_s = ProductSizeStock.objects.filter(product = cartproduct.product, size__shortname = size)
+                # print(p_s_s)
                 # print(this_product_in_cart) 6
-                if cartproduct.size==size:
-                    cartproduct.quantity += item_quantity
-                    if product_obj.selling_price and (product_obj.selling_price != 0) :
-                        cartproduct.subtotal = product_obj.selling_price * cartproduct.quantity
-                        cartproduct.rate = product_obj.selling_price
-                        cartproduct.save()
-                        cart_obj.total += (product_obj.selling_price * item_quantity)
-                        cart_obj.save()
-                        
-                    else:
-                        cartproduct.subtotal = product_obj.marked_price * cartproduct.quantity
-                        cartproduct.rate = product_obj.marked_price   
-                        cartproduct.save()
-                        cart_obj.total += (product_obj.marked_price * item_quantity)
-                        cart_obj.save()
+                for cartproduct in cartproduct:
+                    sz = Size.objects.get(shortname = size)
+                    print(sz)
+                    print(cartproduct.product)
+                    print('????????????'+ str(sz.shortname))
+                    print(cartproduct.size.all())
+                    if sz in cartproduct.size.all() :
+                        print('yes')
+                        cartproduct.quantity += item_quantity
+                        if product_obj.selling_price and (product_obj.selling_price != 0) :
+                            cartproduct.subtotal = product_obj.selling_price * cartproduct.quantity
+                            cartproduct.rate = product_obj.selling_price
+                            cartproduct.save()
+                            cart_obj.total += (product_obj.selling_price * item_quantity)
+                            cart_obj.save()
+                            
+                        else:
+                            cartproduct.subtotal = product_obj.marked_price * cartproduct.quantity
+                            cartproduct.rate = product_obj.marked_price   
+                            cartproduct.save()
+                            cart_obj.total += (product_obj.marked_price * item_quantity)
+                            cart_obj.save()
 
-                else:
-                    if product_obj.selling_price and product_obj.selling_price != 0:
-                        cartproduct = CartProduct.objects.create(
-                            cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=(product_obj.selling_price * item_quantity),size=size)
-                        cart_obj.total += (product_obj.selling_price * item_quantity)
-                        cart_obj.save()
                     else:
-                        cartproduct = CartProduct.objects.create(
-                            cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=(product_obj.marked_price * item_quantity),size=size)
-                        cart_obj.total += (product_obj.marked_price * item_quantity)
-                        cart_obj.save()
+                        if product_obj.selling_price and product_obj.selling_price != 0:
+                            cartproduct = CartProduct.objects.create(
+                                cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=(product_obj.selling_price * item_quantity))
+                            cartproduct.size.add(sz)
+                            cart_obj.total += (product_obj.selling_price * item_quantity)
+                            cart_obj.save()
+                        else:
+                            cartproduct = CartProduct.objects.create(
+                                cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=(product_obj.marked_price * item_quantity))
+                            cartproduct.size.add(sz)
+                            cart_obj.total += (product_obj.marked_price * item_quantity)
+                            cart_obj.save()
 
 
             # new item is added in cart
             else:
                 if product_obj.selling_price and product_obj.selling_price != 0:
                     cartproduct = CartProduct.objects.create(
-                        cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=(product_obj.selling_price * item_quantity),size=size)
+                        cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=(product_obj.selling_price * item_quantity))
+                    cartproduct.size.add(sz)
                     cart_obj.total += (product_obj.selling_price * item_quantity)
                     cart_obj.save()
                 else:
                     cartproduct = CartProduct.objects.create(
-                        cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=(product_obj.marked_price * item_quantity),size=size)
+                        cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=(product_obj.marked_price * item_quantity))
+                    cartproduct.size.add(sz)
                     cart_obj.total += (product_obj.marked_price * item_quantity)
                     cart_obj.save()
 
         else:
+           
+            print('????????????'+ str(sz.shortname))
             cart_obj = Cart.objects.create(total=0)
             self.request.session['cart_id'] = cart_obj.id
             if product_obj.selling_price and product_obj.selling_price != 0:
+                sz = Size.objects.get(shortname = size)
+                print('nmnbnm'+ str(sz))
                 cartproduct = CartProduct.objects.create(
-                    cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=product_obj.selling_price,size=size)
+                    cart=cart_obj, product=product_obj, rate=product_obj.selling_price, quantity=item_quantity, subtotal=product_obj.selling_price)
+                
+                cartproduct.size.add(sz)
+            
                 cart_obj.total += product_obj.selling_price
                 cart_obj.save()
-            else:    
+            else:   
+
+                sz = Size.objects.get(shortname = size)
+                print('nmnbnm'+ str(sz)) 
+               
                 cartproduct = CartProduct.objects.create(
-                    cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=product_obj.marked_price,size=size)
+                    cart=cart_obj, product=product_obj, rate=product_obj.marked_price, quantity=item_quantity, subtotal=product_obj.marked_price)
+                cartproduct.size.add(sz)
+            
                 cart_obj.total += product_obj.marked_price
                 cart_obj.save()
+        
 
         return JsonResponse({
             'message': ' has been added to your cart',
@@ -1029,6 +1085,9 @@ class AjaxAddToCartView(ClientRequiredMixin, TemplateView):
             # 'addedproductcolor': product_obj.color.title,
             # 'addedproductsize': product_obj.size.title,
             'addedproductquantity': item_quantity,
+            't_size': t_size.instock,
+            't_q': t_q,
+            
             'addedproductprice': cartproduct.rate,
             'addedproductimage': product_obj.image1.url
         })    
