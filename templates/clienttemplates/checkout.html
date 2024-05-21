@@ -1,0 +1,215 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+{% block title %}Checkout {% endblock %}
+{% load humanize %}
+{% block content %}
+ <!-- Breadcrumb Section Begin -->
+ <div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text product-more">
+                    <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                    <a href="./shop.html">Shop</a>
+                    <span>Check Out</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb Section Begin -->
+
+<!-- Shopping Cart Section Begin -->
+<section class="checkout-section spad p-3">
+    <div class="container"> 
+    {% if cart %}
+        
+   
+        
+        <form method="POST" class="checkout-form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- <div class="checkout-content">
+                        <a href="#" class="content-btn">Click Here To Login</a>
+                    </div> -->
+                    <h4>Biiling Details</h4>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label for="fir">Full Name<span>*</span></label>
+                           {{ form.ordered_by}}
+                        </div>
+                        <!-- <div class="col-lg-6">
+                            <label for="last">Last Name<span>*</span></label>
+                            <input type="text" id="last">
+                        </div> -->
+                        <!-- <div class="col-lg-12">
+                            <label for="cun-name">Company Name</label>
+                            <input type="text" id="cun-name">
+                        </div> -->
+                        <!-- <div class="col-lg-12">
+                            <label for="cun">Country<span>*</span></label>
+                            <input type="text" id="cun">
+                        </div> -->
+                        <div class="col-lg-12">
+                            <label for="street">Shipping Address<span>*</span></label>
+                           {{form.shipping_address}}
+                           
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="zip">Email</label>
+                           {{form.email}}
+                        </div>
+                        <!-- <div class="col-lg-12">
+                            <label for="town">Town / City<span>*</span></label>
+                            <input type="text" id="town">
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="email">Email Address<span>*</span></label>
+                            <input type="text" id="email">
+                        </div> -->
+                        <div class="col-lg-6">
+                            <label for="phone">Mobile<span>*</span></label>
+                            {{form.mobile}}
+                        </div>
+                        <!-- <div class="col-lg-12">
+                            <div class="create-item">
+                                <label for="acc-create">
+                                    Create an account?
+                                    <input type="checkbox" id="acc-create">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <!-- <div class="checkout-content">
+                        <input type="text" placeholder="Enter Your Coupon Code">
+                    </div> -->
+                    <div class="place-order">
+                        <h4>Your Order</h4>
+                        <div class="order-total">
+                            <ul class="order-table">
+                                <li>Product <span>Total</span></li>
+
+                                
+                                {% for cp in cart.cartproduct_set.all %}
+                                    
+                        
+                                    
+                                <li id="cart" cart-product="{{cp}}" class="fw-normal">{{cp.product.title}} x {{cp.quantity}} <span>Rs. {{cp.rate}}</span></li>
+                               
+                                {% endfor %}
+                                
+                                <li class="fw-normal">Subtotal <span>Rs. {{total|intcomma}}/-</span></li>
+                                <li class="total-price">Total <span>Rs. {{total|intcomma}}/-</span></li>
+                            </ul>
+                            <!-- <div class="payment-check">
+                                <div class="pc-item">
+                                    <label for="pc-check">
+                                        Cheque Payment
+                                        <input type="checkbox" id="pc-check">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="pc-item">
+                                    <label for="pc-paypal">
+                                        Paypal
+                                        <input type="checkbox" id="pc-paypal">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div> -->
+                            <div class="order-btn">
+                                <button id="checkbtn" type="submit" class="site-btn place-btn">Place Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {% endif %}
+    </div>
+</section>
+<!-- Shopping Cart Section End -->
+{% endblock %}
+
+
+{% block js %}
+<script>
+    
+
+    $('body').on('click', '#checkbtn', function(e){
+       
+            var a = $('#cart').attr('cart-product')
+            if(a) {
+                alert(a)    
+            }
+            
+            var b = $('#qty-input').attr('pro_quantity')
+            // var c = a - b
+            // alert(c)
+    
+                var e;
+                $.ajax({
+                    'async': false,
+    
+                        url: $(this).attr('d-url'),
+                        data: {
+                          'item_quantity': b,
+                          'ajax': 'ajax'
+                        },
+    
+                        success: function (data) {
+                            // alert(data.item);
+                            // $('#quickviewmodal').modal('dispose');                        
+                            // var d = data.addedproduct;
+                            // var b = data.addedproductcolor;
+                            // var c = data.addedproductsize;
+                              e = data.addedproductquantity;
+                            // var f = data.addedproductprice;
+                            // var g = data.addedproductimage;
+                            // alert(e)
+                            // $('#addToCart').modal();
+                            // $('#addToCart img').attr('src', f);
+                            // $('#addToCart img').attr('alt', a);
+                            // $('#addToCart .cart-title').text(a + ', color: ' + b + ', size: ' + c + ', quantity: '+ d);
+                            // $('#addToCart .cart-price').text('Rs. ' + e);
+                            // $('#refresh-basecart').load(' #refresh-basecart');
+    
+                        },
+                        error: function(){
+                            showFrontendAlert('error', 'Oops something went wrong ! Please refresh the page and try again');
+                        }
+                    });
+    
+            // alert(e);        
+            c = a-e;
+            if (c <= 0){
+                $.toast({
+                        heading: 'Stock Limit',
+                        text: 'Stock limit has been reached',
+                        position: 'top-center',
+                        loaderBg:'#fec107',
+                        icon: 'success',
+                        hideAfter: 3500,
+                        stack: 6
+                    });
+            $('#addtocartbtn').prop('disabled', true);
+        
+            $('#addtocartbtn').css("cursor","not-allowed");
+          
+            }
+        });
+    </script>
+    
+
+
+    
+{% endblock js %}
+
+
+
+    

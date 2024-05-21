@@ -1,0 +1,56 @@
+{% extends 'admintemplates/adminbase.html' %}
+
+{%block 'adminproductcategorycreate' %} 
+
+
+<!-- Main Container -->
+            <main id="main-container">
+                <!-- Page Content -->
+                <div class="content">
+                  
+                    <!-- Info -->
+                    <div class="block block-rounded">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Product Category</h3>
+                        </div>
+                        <div class="block-content">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6 col-lg-12">
+                                    <form action="" method="POST" enctype="multipart/form-data" >
+                                        {% csrf_token %}
+                                        <div class="row" > 
+                                        <div class="form-group col-md-12 col-lg-6 ">
+                                            <label for="one-ecom-product-id">Title</label>
+                                        {{form.title}}
+                                        
+                                        
+                                        </div>
+                                        <div class="form-group col-md-12 col-lg-6">
+                                            <label for="one-ecom-product-name">Category</label>
+                                            <div>
+                                         {{form.image}}</div>
+                                        </div>
+                                    
+
+                                        <div class="form-group col-lg-12 text-center">
+                                            <button type="submit" class="btn btn-alt-success">Submit</button>
+                                        </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Info -->
+
+                 
+                </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
+
+
+
+
+{%endblock%}

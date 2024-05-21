@@ -1,0 +1,275 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+
+{% block css %}
+ <style>
+    @media only screen and (max-device-width: 480px){
+
+        .product-item img {
+            height: 170px;
+            object-fit: contain;
+        }
+    }
+
+    @media (max-width:1281px),(min-width:801px) {
+        .product-item img {
+            height: 200px;
+            object-fit: contain;
+        }
+
+    }
+ </style>
+{% endblock css %}
+    
+
+{% block home %}
+
+
+<!-- Hero Section Begin -->
+<section class="hero-section">
+    <div class="hero-items owl-carousel">
+        <div class="single-hero-items set-bg" data-setbg="{{slider.image1.url}}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <span>Bag,kids</span>
+                        <h1>Black friday</h1>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                            incididunt ut labore et dolore</p>
+                        <a href="#" class="primary-btn">Shop Now</a>
+                    </div>
+                </div>
+                <div class="off-card">
+                    <h2>Sale <span>50%</span></h2>
+                </div>
+            </div>
+        </div>
+        <div class="single-hero-items set-bg" data-setbg="{{slider.image2.url}}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <span>Bag,kids</span>
+                        <h1>Black friday</h1>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                            incididunt ut labore et dolore</p>
+                        <a href="#" class="primary-btn">Shop Now</a>
+                    </div>
+                </div>
+                <div class="off-card">
+                    <h2>Sale <span>50%</span></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+
+<!-- Banner Section Begin -->
+<!-- <div class="banner-section spad">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="single-banner">
+                    <img src="img/banner-1.jpg" alt="">
+                    <div class="inner-text">
+                        <h4>Men’s</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="single-banner">
+                    <img src="img/banner-2.jpg" alt="">
+                    <div class="inner-text">
+                        <h4>Women’s</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="single-banner">
+                    <img src="img/banner-3.jpg" alt="">
+                    <div class="inner-text">
+                        <h4>Kid’s</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<!-- Banner Section End -->
+
+<!-- Man Banner Section Begin -->
+<section class="women-banner spad">
+    <div class="container-fluid">
+        <div class="row">
+
+                      
+            <div class="col-lg-12 mt-lg-5 ">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-title">
+                            <h2 style="font-size: 20pt;">Men's Wear</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 ">
+                <div class="filter-control">
+                    <ul>
+                        <li class="active">Clothings</li>
+                        <li>HandBag</li>
+                        <li>Shoes</li>
+                        <li>Accessories</li>
+                    </ul>
+                </div>
+                <div class="product-slider owl-carousel">
+                    
+                    {% for product in men_products  %}
+                        
+                  
+                        
+                    <div class="product-item shadow p-2">
+                        <div class="pi-pic">
+                            <img  src="{{product.image1.url}}" alt="">
+                            {% if product.selling_price %}
+                            <div class="sale"> 
+                                 Sale</div>
+                                 {% endif %}
+                            <!-- <div class="icon">
+                                <a href="{% url 'eshopapp:addtocart' product.id %}" class="btn btn-sm btn-warning">Add To Cart </a>
+                            </div> -->
+                            <ul >
+                                <!-- <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li> -->
+                                <!-- <li class="quick-view"><a href="#">+ Quick View</a></li> -->
+                                <li style="background: #7C0000" class="w-icon"><a class="text-white" href="{% url 'eshopapp:clientproductdetail' product.slug %}">  View Detail</a></li>
+                            </ul>
+                        </div>
+                        <div class="pi-text">
+                            <div class="catagory-name text-dark">
+                            {% for category in product.category.all  %}
+                               {{category}} {% if not forloop.last %}| {%endif%}
+                            {% endfor %}
+                                </div>
+                            <a href="{% url 'eshopapp:clientproductdetail' product.slug %}">
+                                <h5>{{product.title}}</h5>
+                            </a>
+                            <div class="product-price">
+
+                                
+                                {% if product.selling_price %}
+                                    
+                               Rs. {{product.selling_price}}
+                               {% else %}
+                               Rs. {{product.marked_price}}
+                                {% endif %}
+                                 
+                                {% if product.selling_price %}
+                                <span class="text-dark">Rs. {{product.marked_price}}</span>
+                                {%endif%}
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    {% endfor %}
+                   
+                          
+                </div>
+                <div class="text-danger text-center">
+                <a  href="{% url 'eshopapp:clientproductlist'  %}"> <button style="background: #7C0000;" class="btn text-white">  View All </button></a>
+            </div>    
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Man Banner Section End -->
+
+
+
+<!-- Women Banner Section Begin -->
+<section class="women-banner spad">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2 style="font-size: 20pt;">Women's Wear</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 ">
+                <div class="filter-control">
+                    <ul>
+                        <li class="active">Clothings</li>
+                        <li>HandBag</li>
+                        <li>Shoes</li>
+                        <li>Accessories</li>
+                    </ul>
+                </div>
+                <div class="product-slider owl-carousel">
+                    
+                    {% for product in women_products  %}
+                        
+                  
+                        
+                    <div class="product-item">
+                        <div class="pi-pic">
+                            <img style="height: 200px;" src="{{product.image1.url}}" alt="">
+                            {% if product.selling_price %}
+                            <div class="sale"> 
+                                 Sale</div>
+                                 {% endif %}
+                            <!-- <div class="icon">
+                                <i class="icon_heart_alt"></i>
+                            </div> -->
+                            <ul >
+                                <!-- <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li> -->
+                                <!-- <li class="quick-view"><a href="#">+ Quick View</a></li> -->
+                                <li style="background: #7C0000" class="w-icon"><a class="text-white" href="{% url 'eshopapp:clientproductdetail' product.slug %}">  View Detail</a></li>
+                            </ul>
+                        </div>
+                        <div class="pi-text">
+                            <div class="catagory-name text-dark">
+                            {% for category in product.category.all  %}
+                               {{category}} {% if not forloop.last %}| {%endif%}
+                            {% endfor %}
+                                </div>
+                            <a href="{% url 'eshopapp:clientproductdetail' product.slug %}">
+                                <h5>{{product.title}}</h5>
+                            </a>
+                            <div class="product-price">
+
+                                
+                                {% if product.selling_price %}
+                                    
+                               Rs. {{product.selling_price}}
+                               {% else %}
+                               Rs. {{product.marked_price}}
+                                {% endif %}
+                                 
+                                {% if product.selling_price %}
+                                <span class="text-dark">Rs. {{product.marked_price}}</span>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- WOmen Banner Section End -->
+
+
+
+{% block js %}
+
+    
+{% endblock js %}
+
+    
+{% endblock %}
+    

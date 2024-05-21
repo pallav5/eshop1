@@ -1,0 +1,865 @@
+{% extends 'clienttemplates/clientbase.html' %}
+{% load humanize %}
+
+{% block css %}
+    <style>
+         @media only screen and (max-device-width: 480px){
+
+.product-item img {
+    height: 170px;
+    object-fit: contain;
+}
+}
+
+@media (max-width:1281px),(min-width:801px) {
+.product-item img {
+    height: 200px;
+    object-fit: contain;
+}
+
+}
+    </style>
+{% endblock css %}
+    
+{% block productdetail %}
+
+ <!-- Breadcrumb Section Begin -->
+ <div class="breacrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text product-more">
+                    <a href="./home.html"><i class="fa fa-home"></i> Home</a>
+                    <a href="./shop.html">Shop</a>
+                    <span>Detail</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb Section Begin -->
+
+<!-- Product Shop Section Begin -->
+<section class="product-shop spad p-3 page-details">
+    <div  class="container">
+        <div class="row">
+   
+
+            <div  class="col-lg-10">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="product-pic-zoom ">
+                            <img style="height: 400px; object-fit: contain;" class="product-big-img " src="{{productdetail.image1.url}}" alt="">
+                            <div class="zoom-icon"> 
+                                <i class="fa fa-search-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product-thumbs">
+                            <div class="product-thumbs-track ps-slider owl-carousel">
+                               
+                                <div class="pt active" data-imgbigurl="{{productdetail.image1.url}}">
+                                    
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image1.url}}" alt=""></div>
+                             
+                             
+                                    <div class="pt" data-imgbigurl="{{productdetail.image2.url}}">
+                                    
+                                    
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image2.url}}" alt=""></div>
+                               
+                                    {% if productdetail.image3 %}
+                                    <div class="pt" data-imgbigurl="{{productdetail.image3.url}}">
+                                   
+                                   
+                                        <img style="height: 125px; object-fit: contain;" src="{{productdetail.image3.url}}" alt=""></div>
+                                        
+                                        {%endif%}
+                                      
+                                      
+                                      {% if productdetail.image4 %}
+                                        
+                                   
+                                          <div class="pt" data-imgbigurl="{{productdetail.image4.url}}">
+
+                                   
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image4.url}}" alt=""></div>
+                                   
+                                {%endif%}
+
+                                      {% if productdetail.image5 %}
+                                        
+                                   
+                                          <div class="pt" data-imgbigurl="{{productdetail.image5.url}}">
+
+                                   
+                                    <img style="height: 125px; object-fit: contain;" src="{{productdetail.image5.url}}" alt=""></div>
+                                   
+                                {%endif%}
+                                </div>
+                        </div>
+                    </div>
+                    <div  class="col-lg-6">
+                        <div class="product-details">
+                            <div class="pd-title">
+                                <!-- <span>oranges</span> -->
+                                <h3>{{productdetail.title}}</h3>
+                                <!-- <a href="#" class="heart-icon"><i class="icon_heart_alt"></i></a> -->
+                            </div>
+                            <!-- <div class="pd-rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-o"></i>
+                                <span>(5)</span>
+                            </div> -->
+                            <div class="pd-desc">
+                                <p>{{productdetail.description|safe}}</p>
+                            
+                            {% if productdetail.selling_price %}
+                                
+                           
+                                    <h4>Rs. {{productdetail.selling_price|intcomma}}/- {% else %} <h4> Rs. {{productdetail.marked_price|intcomma}}/-</h4>  {% endif %}  {% if productdetail.selling_price %} <span> Rs. {{productdetail.marked_price}}</span> {%endif%}</h4>
+                            </div>
+                            <div class="pd-color">
+                                <h6>Color :</h6>
+
+                                
+                                {% for color  in productdetail.color.all %}
+                               <div class=""> <h6 style="color: #7C0000;" class=" ">{{color}}</h6> </div>
+                                {% endfor %}
+                                <br>
+                                
+                                <!-- <div class="pd-color-choose">
+                                    <div class="cc-item">
+                                        <input type="radio" id="cc-black">
+                                        <label for="cc-black"></label>
+                                    </div>
+                                    <div class="cc-item">
+                                        <input type="radio" id="cc-yellow">
+                                        <label for="cc-yellow" class="cc-yellow"></label>
+                                    </div>
+                                    <div class="cc-item">
+                                        <input type="radio" id="cc-violet">
+                                        <label for="cc-violet" class="cc-violet"></label>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <div>
+                                
+                                <!-- {% for a in pro_size_stock %}
+
+                                <h1>{{a.size}}</h1>
+                                    
+                                {% endfor %}
+                                     -->
+                            </div>
+                            <!-- {% if productdetail.size.all %} -->
+                            <div class="pd-size-choose mb-0">
+                                <div  class="pd-color">
+                              <h6  class="pt-2 text-success">Sizes : </h6>  </div>
+                                
+                                {% for size  in pro_size_stock %}
+                                <div id="sizeid" product-kwargs = "{{ productdetail.title }}" class="sc-item" data-url="{% url 'eshopapp:ajaxprosizeqty' size.size %}">
+                                    <input type="radio" id="sm-size">
+                                   
+                                    
+                                    <label class="{% if forloop.counter == 1 %}active{%endif%}"  for=" sm-size ">{{size.size.shortname}}</label>
+                                    
+                                    {% if "Extra Small" == size.title %}
+
+                                  <label for=" xs-size ">XS</label>
+                                 
+                                 {% elif "Small" == size.size %}
+                                 <label for=" sm-size ">S</label>
+
+                                 {% elif "Medium" == size.title %}
+
+                                  <label for=" md-size ">M</label>
+
+                                  {% elif "Large" == size.title %}
+
+                                  <label for=" lg-size ">L</label>
+                                  
+                                  {% elif "Extra Large" == size.title %}
+
+                                  <label for=" xl-size ">XL</label>
+
+                                  
+                                 
+                                 {% endif %}
+
+
+                                
+                                    
+                                </div>
+
+                                {% endfor %}
+                                    
+                               
+                              
+                            </div>
+                            <!-- {%endif%} -->
+                            <div  class="quantity item_quantity">
+                                <div  id="pro-qty" class="pro-qty">
+                                    <span class="dec qtybtn">-</span>
+                                    <input   readonly id="qty-input" name="quantity" class="qty-input" max=" {% if pro_size_stock %} {{pro_size_stock.0.instock}}   {%else%}   {{productdetail.instock}}  {%endif%}" type="text"  value="1" pro_quantity="{{pro_quantity}}">
+                                   
+                                    <span data-url="{% url 'eshopapp:ajaxproquantity' productdetail.id %}" class="inc qtybtn">+</span>
+                                </div>
+                                 <button id="addtocartbtn" data-prod-id="{{productdetail.id}}"  class="add-to-cart primary-btn pd-cart" data-url="{% url 'eshopapp:ajaxaddtocart' productdetail.id %}" d-url="{% url 'eshopapp:ajaxproquantity' productdetail.id %}" data-quantity-source='productdetail'>
+                                Add To Cart
+                            </button>
+                           
+                            </div>
+                            <div class="">
+                                <h5 style="color: maroon; font-weight: 700;" > Stock :  {{productdetail.instock}} </h5>
+                                <h5 style="color: maroon; font-weight: 700;" > This Size-Stock : <span id="thissize"> {{pro_size_stock.0.instock}} </span>  </h5>
+                            </div>
+                            <ul class="pd-tags">
+                                <li><span>CATEGORIES</span>: {% for category in productdetail.category.all  %}
+                                    {{category}} {% if not forloop.last %}| {%endif%}
+                                 {% endfor %}</li>
+                                <!-- <li><span>TAGS</span>: Clothing, T-shirt, Woman</li> -->
+                            </ul>
+                            <div class="pd-share ">
+                                <!-- <div class="p-code">Sku : 00012</div> -->
+                                <div class="pd-social ">
+                                    <a href="#"><i class="ti-facebook"></i></a>
+                                    <a href="#"><i class="ti-twitter-alt"></i></a>
+                                    <a href="#"><i class="ti-linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               
+                <div class="product-tab pt-3 col-lg-12">
+                    <div class="tab-item">
+                        <ul class="nav" role="tablist">
+                            <li>
+                                <a class="active" data-toggle="tab" href="#tab-1" role="tab">DESCRIPTION</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#tab-2" role="tab">SPECIFICATIONS</a>
+                            </li>
+                           
+                        </ul>
+                    </div>
+                   
+                </div>
+
+        <div class="tab-item-content">
+            <div class="tab-content">
+                <div class="tab-pane fade-in active " id="tab-1" role="tabpanel">
+                    <div class="product-content pl-3">
+                        <div class="row">
+                            <div class="">
+                                {{productdetail.description|safe}}
+                            </div>
+                            <div class="col-12 mt">
+                                <img src="img/product-single/tab-desc.jpg" alt="">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade pl-3 " id="tab-2" role="tabpanel">
+                    <div class="specification-table ">
+
+                        <div class="row">
+                        <table style="width: 700px;">
+                            <tr>
+                                <!-- <td class="p-catagory">Customer Rating</td> -->
+                                <!-- <td>
+                                    <div class="pd-rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <span>(5)</span>
+                                    </div>
+                                </td> -->
+                            </tr>
+                            <tr>
+                                <td class="p-catagory">Marked Price</td>
+                                <td>
+                                    <div class="p-price">Rs. {{productdetail.marked_price| intcomma}}/-</div>
+                                </td>
+                            </tr>
+
+                                                               
+                           
+                          
+                          {% if productdetail.selling_price %}
+                            
+                          
+                              <tr> 
+                                <td class="p-catagory">Selling Price</td>
+                                <td>
+                                    <div class="p-price">Rs. {{productdetail.selling_price|intcomma}}/-</div>
+                                </td>
+                            </tr>
+                            {% endif %}
+
+                          {% if productdetail.discount_pct %}
+                            
+                          
+                              <tr> 
+                                <td class="p-catagory">Discount</td>
+                                <td>
+                                    <div class="p-price">{{productdetail.discount_pct}} %</div>
+                                </td>
+                            </tr>
+                            {% endif %}
+
+                          {% if productdetail.brand %}
+                            
+                          
+                              <tr> 
+                                <td class="p-catagory">Brand</td>
+                                <td>
+                                    <div class="p-price">{{productdetail.brand}}</div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                
+                            </tr>
+                            <tr>
+                                <td class="p-catagory">Availability</td>
+                                <td>
+                                    <div class="p-stock">{{productdetail.instock}} in stock</div>
+                                </td>
+                            </tr>
+                           
+                            <tr>
+                                <td class="p-catagory">Size</td>
+                               
+                                
+                                <td>
+                                    {% for size in productdetail.size.all  %}
+                                    <div class="p-size">{{size}} {% if not forloop.last %}, {%endif%}</div>
+                                    {%endfor%}
+                                </td>
+                               
+                            </tr>
+                           
+                            <tr>
+                                <td class="p-catagory">Color</td>
+                                <td> {% for color in productdetail.color.all  %}
+                                    <div class="p-code">{{color}} {% if not forloop.last %}, {%endif%}</div>
+                                    {%endfor%}
+                                   
+                                </td>
+
+                                
+                            </tr>
+
+                            <tr>
+                                
+                                {% if productdetail.weight  %}
+                                    
+                               
+                                    
+                                <td class="p-catagory">Weight</td>
+                                <td>
+                                    <div class="p-weight">{{productdetail.weight}} </div>
+                                </td>
+                                {% endif %}
+
+                              
+                                
+                                    {% if productdetail.height  %}
+                                    <tr>
+                                   
+                                        
+                                    <td class="p-catagory">Height</td>
+                                    <td>
+                                        <div class="p-weight">{{productdetail.height}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                   
+                                    
+                                    {% if productdetail.length  %}
+                                    <tr>
+                                   
+                                        
+                                    <td class="p-catagory">Length</td>
+                                    <td>
+                                        <div class="p-weight">{{productdetail.length}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                
+                                    {% if productdetail.width  %}
+                                        
+                                   
+                                      <tr>  
+                                    <td class="p-catagory">Width</td>
+                                    <td>
+                                        <div class="p-weight">{{productdetail.width}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                    {% if productdetail.return_policy  %}
+                                        
+                                   
+                                        <tr class="">
+                                    <td class="p-catagory">Return Policy</td>
+                                    <td>
+                                        <div  class="p-weight text-center ">{{productdetail.return_policy|safe}}</div>
+                                    </td>
+                                </tr>
+                                    {% endif %}
+                                </tr>
+                            </tr>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+             
+            </div>
+        </div>
+            </div>
+            </div>
+            <div class="col-lg-2 col-sm-12 ">
+                <div class="filter-widget">
+                    <h4 class="fw-title">Categories</h4>
+                    <ul class="filter-catagories">
+                        {% for category  in allcategories  %}
+                            
+                       
+                            
+                        <li><a href="{% url 'eshopapp:clientproductbycategorylist' category.slug %}">{{category.title}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="filter-widget">
+                    <h4 class="fw-title">Brand</h4>
+                    <div class="fw-brand-check">
+                        <div class="bc-item">
+                            <label for="bc-calvin">
+                                Calvin Klein
+                                <input type="checkbox" id="bc-calvin">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="bc-item">
+                            <label for="bc-diesel">
+                                Diesel
+                                <input type="checkbox" id="bc-diesel">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="bc-item">
+                            <label for="bc-polo">
+                                Polo
+                                <input type="checkbox" id="bc-polo">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="bc-item">
+                            <label for="bc-tommy">
+                                Tommy Hilfiger
+                                <input type="checkbox" id="bc-tommy">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-widget">
+                    <h4 class="fw-title">Price</h4>
+                    <div class="filter-range-wrap">
+                        <div class="range-slider">
+                            <div class="price-input">
+                                <input type="text" id="minamount">
+                                <input type="text" id="maxamount">
+                            </div>
+                        </div>
+                        <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
+                            data-min="33" data-max="98">
+                            <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                        </div>
+                    </div>
+                    <a href="#" class="filter-btn">Filter</a>
+                </div>
+               
+                <!-- <div class="filter-widget">
+                    <h4 class="fw-title">Size</h4>
+                    <div class="fw-size-choose">
+                        <div class="sc-item">
+                            <input type="radio" id="s-size">
+                            <label for="s-size">s</label>
+                        </div>
+                        <div class="sc-item">
+                            <input type="radio" id="m-size">
+                            <label for="m-size">m</label>
+                        </div>
+                        <div class="sc-item">
+                            <input type="radio" id="l-size">
+                            <label for="l-size">l</label>
+                        </div>
+                        <div class="sc-item">
+                            <input type="radio" id="xs-size">
+                            <label for="xs-size">xs</label>
+                        </div>
+                    </div>
+                </div> -->
+               
+            </div>
+
+        </div>
+       
+        </div>
+    </div>
+</section>
+<!-- Product Shop Section End -->
+
+<!-- Related Products Section End -->
+<div class="">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2 style="font-size: 20pt;">Related Products</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-lg-3">
+            
+                
+                {% for product  in related_products  %}
+                    
+                <div class="col-lg-3 col-sm-6 ">
+                    
+                <div class="product-item shadow p-2">
+                    <div class="pi-pic">
+                        <img src="{{product.image1.url}}" alt="">
+                        {% if product.selling_price %}
+                        <div class="sale">Sale</div>
+                        {%endif%}
+                        
+                        <ul>
+                            <!-- <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li> -->
+                            <li style="background-color: #7C0000;" class="quick-view "><a class="text-white" href="{% url 'eshopapp:clientproductdetail' product.slug %}"> View Detail</a></li>
+                            <!-- <li class="w-icon"><a href="#"><i class="fa fa-random"></i></a></li> -->
+                        </ul>
+                    </div>
+                    <div class="pi-text">
+                        <div class="catagory-name">{% for category in product.category.all  %}
+                            {{category}} {% if not forloop.last %}| {%endif%}
+                         {% endfor %}</div>
+                        <a href="{% url 'eshopapp:clientproductdetail' product.slug %}">
+                            <h5>{{product.title}}</h5>
+                        </a>
+                        <div class="product-price">
+
+                            {% if product.selling_price %}
+                            Rs. {{product.selling_price}}
+                            {%else%}
+                            Rs. {{product.marked_price}}
+                            {%endif%}
+                            
+                            {% if product.selling_price %}
+                                
+                           
+                                
+                            <span>Rs. {{product.marked_price}}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+                {% endfor %}
+            </div>
+            
+    </div>
+</div>
+
+
+
+
+<!-- Related Products Section End -->
+    
+{% endblock productdetail %}
+
+
+
+{% block js %}
+
+
+
+
+<script>
+
+// z = "{{request.session.item_quantity}}";
+
+// alert(z);
+/*-------------------
+		Quantity change
+	--------------------- */
+
+       
+
+    var proQty = $('.pro-qty');
+	// proQty.prepend('<span class="dec qtybtn">-</span>');
+	// proQty.append('<span class="inc qtybtn">+</span>');
+	proQty.on('click', '.qtybtn', function () {
+       
+		var $button = $(this);
+		var oldValue = $button.parent().find('input').val();
+        var a = $('#qty-input').attr('max')
+        var b = $('#qty-input').attr('pro_quantity')
+        // alert(a);
+        // alert(b );
+        // var v = $("#sizeid label"); 
+
+        var v = $('.pd-size-choose').find("label[class=active]").text();
+
+        
+        
+        // alert (v)
+		if ($button.hasClass('inc')) {
+         
+                
+                var e;
+                
+            $.ajax({
+                'async': false,
+
+                    url: $(this).attr('data-url'),
+                    data: {
+                      'item_quantity': b,
+                      'ajax': 'ajax',
+                      'item_size': v
+                    },
+
+                    success: function (data) {
+                        // alert(data.item);
+                        // $('#quickviewmodal').modal('dispose');                        
+                        // var d = data.addedproduct;
+                        // var b = data.addedproductcolor;
+                        // var c = data.addedproductsize;
+                          e = data.addedproductquantity;
+                        // var f = data.addedproductprice;
+                        // var g = data.addedproductimage;
+                        // alert(e)
+                        // $('#addToCart').modal();
+                        // $('#addToCart img').attr('src', f);
+                        // $('#addToCart img').attr('alt', a);
+                        // $('#addToCart .cart-title').text(a + ', color: ' + b + ', size: ' + c + ', quantity: '+ d);
+                        // $('#addToCart .cart-price').text('Rs. ' + e);
+                        // $('#refresh-basecart').load(' #refresh-basecart');
+
+                        s_s = data.t_size_stock
+                        // document.getElementById('qty-input').setAttribute('max', data.t_size_stock);
+
+                    },
+                    error: function(){
+                        showFrontendAlert('error', 'Oops something went wrong ! Please refresh the page and try again');
+                    }
+                });
+
+
+
+
+
+
+
+
+            
+
+            // if (c == 0){
+            //     // a.attr('disabled', true);
+            //     alert('max item on cart reached');
+            // }
+            // alert(e);
+            // alert(s_s);
+            f = s_s-e;
+            
+			var newVal = parseFloat(oldValue) + 1;
+            if (oldValue >= Number(f)) {
+                $.toast({
+                    heading: 'Stock Limit',
+                    text: 'Stock limit has been reached',
+                    position: 'top-center',
+                    loaderBg:'#fec107',
+                    icon: 'warning',
+                    hideAfter: 3500,
+                    stack: 6
+                });
+                // alert('');
+                // $('.inc').css("cursor","not-allowed");
+                s_s.attr('disabled', true);
+               
+              
+           
+             
+
+            }
+		} 
+
+
+        // else {
+		// 	// Don't allow decrementing below zero
+		// 	if (oldValue > 0) {
+		// 		var newVal = parseFloat(oldValue) - 1;
+		// 	} else {
+		// 		newVal = 0;
+		// 	}
+		// }
+        
+        else {
+			// Don't allow decrementing below one
+			if (oldValue == 1) {
+				var newVal = parseFloat(oldValue);
+			} else {
+				newVal = parseFloat(oldValue)-1;
+			}
+		}
+		$button.parent().find('input').val(newVal);
+	});
+
+
+
+// document.getElementById("addtocartbtn").disabled = true;
+
+
+</script>
+
+<script>
+    
+
+$('body').on('click', '#addtocartbtn', function(e){
+    e.preventDefault();
+        var a = $('#qty-input').attr('max')
+        var b = $('#qty-input').attr('pro_quantity')
+        // var size = $('#sizeid .active').text()
+        // var c = a - b
+        
+
+            var e,t;
+            $.ajax({
+                'async': false,
+
+                    url: $(this).attr('d-url'),
+                    data: {
+                      'item_quantity': b,
+                      'ajax': 'ajax',
+                    
+                    },
+
+                    success: function (data) {
+                      
+                        // $('#quickviewmodal').modal('dispose');                        
+                        // var d = data.addedproduct;
+                        // var b = data.addedproductcolor;
+                        // var c = data.addedproductsize;
+                          e = data.addedproductquantity;
+                          t = data.t_size;
+                          alert(t);
+                        // var f = data.addedproductprice;
+                        // var g = data.addedproductimage;
+                        // alert(e)
+                        // $('#addToCart').modal();
+                        // $('#addToCart img').attr('src', f);
+                        // $('#addToCart img').attr('alt', a);
+                        // $('#addToCart .cart-title').text(a + ', color: ' + b + ', size: ' + c + ', quantity: '+ d);
+                        // $('#addToCart .cart-price').text('Rs. ' + e);
+                        // $('#refresh-basecart').load(' #refresh-basecart');
+
+                    },
+                    error: function(){
+                        showFrontendAlert('error', 'Oops something went wrong ! Please refresh the page and try again');
+                    }
+                });
+
+  
+        // alert(t);
+        c = t-e;
+        if (c <= 0){
+            $.toast({
+                    heading: 'Stock Limit',
+                    text: 'Stock limit has been reached',
+                    position: 'top-center',
+                    loaderBg:'#fec107',
+                    icon: 'warning',
+                    hideAfter: 3500,
+                    stack: 6
+                });
+        $('#addtocartbtn').prop('disabled', true);
+    
+        $('#addtocartbtn').css("cursor","not-allowed");
+      
+        }
+    });
+</script>
+
+
+<!-- <script>
+    
+
+$('body').on('click', '#sizeid', function(e){
+
+    e.preventDefault();
+  alert($(this).text());
+  
+    
+
+        
+    });
+</script>
+ -->
+
+<script>
+    var data = new FormData();
+    $('html').on('click', '#sizeid', function(e){
+    //   data.append('action', 'toggle_button')
+    //   data.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+    // alert($(this).text());
+    e.preventDefault();
+    var a = $(this).text();
+    pk = $(this).attr('product-kwargs') 
+    // alert(pk)
+    // alert($(this).attr('data-url'));
+    var size_name = $('#sizeid .active').text()
+    var thissize = document.getElementById("thissize");
+    
+    //   data.append('size', $(this).text())
+      $.ajax({
+            'async': false,
+        //    type: 'GET',
+           url: $(this).attr('data-url'),
+        //    data: data,
+        dataType: "json",
+           data: {
+                    //   'productsize': a,
+                      'product-kwargs': pk,
+                      'ajax': 'ajax',
+                    //   'size': size
+                    },
+       
+
+        success: function(resp){
+       
+        thissize.innerHTML  = resp.t_size_stock;
+        
+        document.getElementById('qty-input').setAttribute('max', resp.t_size_stock);
+       
+        $('#qty-input').val('1');
+       var thissizemax = $("#qty-input").attr('value');
+        
+    }
+      })
+    })
+    </script>
+
+{% endblock js %}
+
+
+    

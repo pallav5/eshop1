@@ -1,0 +1,202 @@
+{% extends 'admintemplates/adminbase.html' %}
+
+{%block 'adminproductcreate' %} 
+
+
+<!-- Main Container -->
+            <main id="main-container">
+                <!-- Page Content -->
+                <div class="content">
+
+                    {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p class="alert alert-danger alert-dismissable"> {{ error }} </p>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+                   
+                  {% comment %}
+                      <!-- Quick Overview + Actions -->
+                      <div class="row">
+                        <div class="col-6 col-lg-4">
+                            <a class="block block-rounded block-link-shadow text-center" href="">
+                                <div class="block-content block-content-full">
+                                    <div class="font-size-h2 text-dark">250</div>
+                                </div>
+                                <div class="block-content py-2 bg-body-light">
+                                    <p class="font-w600 font-size-sm text-muted mb-0">
+                                        Pending
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-lg-4">
+                            <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                                <div class="block-content block-content-full">
+                                    <div class="font-size-h2 text-dark">29</div>
+                                </div>
+                                <div class="block-content py-2 bg-body-light">
+                                    <p class="font-w600 font-size-sm text-muted mb-0">
+                                        Available
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4">
+                            <a class="block block-rounded block-link-shadow text-center" href="">
+                                <div class="block-content block-content-full">
+                                    <div class="font-size-h2 text-danger">
+                                        <i class="fa fa-times"></i>
+                                    </div>
+                                </div>
+                                <div class="block-content py-2 bg-body-light">
+                                    <p class="font-w600 font-size-sm text-danger mb-0">
+                                        Remove Product
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- END Quick Overview + Actions -->
+
+                  {% endcomment %}
+                    <!-- Info -->
+                    <div class="block block-rounded">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Manage Products</h3>
+                        </div>
+                        <div class="block-content">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6 col-lg-12">
+                                    <form action="" method="POST" enctype="multipart/form-data" >
+                                        {% csrf_token %}
+                                        <div class="row" > 
+                                        <div class="form-group col-md-12 col-lg-6 ">
+                                            <label for="one-ecom-product-id">Title <span class="text-danger">*</span> </label>
+                                        {{form.name}}
+                                        
+                                        
+                                        </div>
+                                        <div class="form-group col-md-12 col-lg-6">
+                                            <label for="one-ecom-product-name">Logo <span class="text-danger">*</span></label>
+                                       {{form.logo}}
+                                        </div>
+                                        <div class="form-group col-lg-12">
+                                            <!-- CKEditor (js-ckeditor-inline + js-ckeditor ids are initialized in Helpers.ckeditor()) -->
+                                            <!-- For more info and examples you can check out http://ckeditor.com -->
+                                            <label>Introduction <span class="text-danger">*</span></label>
+                                           {{form.introduction}}
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <!-- CKEditor (js-ckeditor-inline + js-ckeditor ids are initialized in Helpers.ckeditor()) -->
+                                            <!-- For more info and examples you can check out http://ckeditor.com -->
+                                            <label>Address <span class="text-danger">*</span></label>
+                                           {{form.address}}
+                                        </div>
+                                        
+                                        <div class="form-group col-lg-4">
+                                            <!-- CKEditor (js-ckeditor-inline + js-ckeditor ids are initialized in Helpers.ckeditor()) -->
+                                            <!-- For more info and examples you can check out http://ckeditor.com -->
+                                            <label>Profile image</label>
+                                           {{form.profile_image}}
+                                        </div>
+                                        
+                                        <div class="form-group col-lg-4">
+                                         
+                                            <label for="">Contact no <span class="text-danger">*</span></label>
+                                            {{form.contact_no}}
+                                        </div>
+                                       
+                                        <div class="form-group col-lg-4">
+                                            <div class="col-md-12">
+                                                <label for="one-ecom-product-stock">Alternative Contact Number</label>
+
+                                                {{form.alt_contact_no}}
+                                            </div>
+                                        </div>
+
+                                           
+                                                <div class="form-group col-lg-4">
+                                                    <div class="col-md-12">
+                                                        <label for="">Email <span class="text-danger">*</span> <label>
+                                                            {{form.email}}
+                                                   
+                                                </div>
+                                            </div>
+                                                <div class="form-group col-lg-4">
+                                                    <div class="col-md-12">
+                                                        <label for="one-ecom-product-price">Alternative Email <label>
+                                                            {{form.alt_email}}
+                                                   
+                                                </div>
+                                            </div>
+                                                <div class="form-group col-lg-4">
+                                                    <div class="col-md-12">
+                                                        <label> Map Location  <label>
+                                                            {{form.map_location}}
+                                                   
+                                                </div>
+                                            </div>
+
+
+
+                                        <div class="form-group col-lg-4">
+                                            <label class="d-block">Slogan</label>
+                                            {{form.slogan}}
+                                           
+                                        </div>
+
+                                        <div class="form-group col-lg-4">
+                                            <label class="d-block">Facebook Link</label>
+                                            {{form.facebook}}
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <label class="d-block">Instagram Link</label>
+                                            {{form.instagram}}
+                                        </div>
+
+                                        
+                                        <div class="form-group col-lg-4">
+                                            <label>Youtube Link</label>
+                                            {{form.youtube}}
+                                        </div>
+
+
+                                      
+
+                                        <div class="form-group col-lg-12">
+                                            <label>Terms and Condition </label>
+                                            <div class="custom-control custom-switch mb-1">
+
+                                                {{form.terms_and_conditions}}
+                                            </div>
+                                        </div>
+                                     
+
+                                        <div class="form-group col-lg-12 text-center">
+                                            <button type="submit" class="btn btn-alt-success">Submit</button>
+                                        </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Info -->
+
+                 
+                </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
+
+
+
+{% block js %}
+
+{% endblock js %}
+    
+
+{%endblock%}

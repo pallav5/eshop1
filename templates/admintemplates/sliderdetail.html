@@ -1,0 +1,90 @@
+{% extends 'admintemplates/adminbase.html' %}
+
+{%block 'adminproductdetail' %} 
+
+
+     <!-- Main Container -->
+     <main id="main-container">
+       
+
+        <!-- Page Content -->
+        <div class="content">
+            <!-- Toggle Side Content -->
+            <!-- Class Toggle, functionality initialized in Helpers.coreToggleClass() -->
+            <div class="d-xl-none push">
+                <div class="row gutters-tiny">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-light btn-block" data-toggle="class-toggle" data-target=".js-ecom-div-nav" data-class="d-none">
+                            <i class="fa fa-fw fa-bars text-muted mr-1"></i> Navigation
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-light btn-block" data-toggle="class-toggle" data-target=".js-ecom-div-cart" data-class="d-none">
+                            <i class="fa fa-fw fa-shopping-cart text-muted mr-1"></i> Cart (3)
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- END Toggle Side Content -->
+
+            <div class="row">
+              
+                <div class="col-xl-8 col-xl-12 order-xl-0">
+                    <!-- Product -->
+                    <div class="block block-rounded">
+                        <div class="block-content">
+                            <!-- Vitals -->
+                            <div class="row ">
+                                <div class="col-md-12 ">
+                                    <!-- Images -->
+                                    <!-- Magnific Popup (.js-gallery class is initialized in Helpers.magnific()) -->
+                                    <!-- For more info and examples you can check out http://dimsemenov.com/plugins/magnific-popup/ -->
+                                    <h5>{{sliderdetail.title}}</h5>
+                                    <div class="row gutters-tiny js-gallery img-fluid-100">
+                                        
+                                        <div class="col- mb-3">
+                                           
+                                            <a class="img-link img-link-zoom-in img-lightbox" target=”_blank” href="{{sliderdetail.image1.url}}">
+                                                <img style="height: 240px; width: 320px; object-fit: cover;" class="img-fluid" src="{{sliderdetail.image1.url}}" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="col-4 mb-3">
+                                            <a class="img-link img-link-zoom-in img-lightbox" target=”_blank” href="{{sliderdetail.image2.url}}">
+                                                <img style="height: 240px; width: 320px; object-fit: cover;" class="img-fluid" src="{{sliderdetail.image2.url}}" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="col-4 mb-3">
+                                            <a class="img-link img-link-zoom-in img-lightbox" target=”_blank” href="{{sliderdetail.image3.url}}">
+                                                <img style="height: 240px; width: 320px; object-fit: cover;" class="img-fluid" src="{{sliderdetail.image3.url}}" alt="">
+                                            </a>
+                                        </div>
+                                      
+                                     
+                                        
+                                        
+<!-- 
+                                        {% if adminproductdetail.image5 %}
+                                        <div class="col-4">
+                                            <a class="img-link img-link-zoom-in img-lightbox" href="{{adminproductdetail.image5.url}}">
+                                                <img style="height:100px;  object-fit: cover;" class="img-fluid" src="{{adminproductdetail.image5.url}}" alt="">
+                                            </a>
+                                        </div>
+                                        {%endif%} -->
+                                    </div>
+                                    <!-- END Images -->
+                                </div>
+                               
+                            </div>
+                            <!-- END Vitals -->
+
+                        </div>
+                    </div>
+                    <!-- END Product -->
+                </div>
+            </div>
+        </div>
+        <!-- END Page Content -->
+    </main>
+    <!-- END Main Container -->
+
+{%endblock%}

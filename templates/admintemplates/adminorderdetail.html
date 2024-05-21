@@ -1,0 +1,307 @@
+    
+   
+   {% extends 'admintemplates/adminbase.html' %}
+   {% load humanize %}
+   {% block content %} 
+   
+    <!-- Main Container -->
+    <main  id="main-container">
+        <!-- Page Content -->
+        <div  class="content">
+            <!-- Quick Overview -->
+            <div  class="row">
+                <div  class="col-6 col-lg-3">
+                    <a id="order-status" class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                        <div class="block-content block-content-full">
+                            {% if adminorderdetail.order_status == 'Order Received' %}
+                            <div class="item item-circle bg-warning-light mx-auto">
+                                <i class="fa fa-angle-down text-success"></i>
+                            </div>
+                            {% elif adminorderdetail.order_status == 'Order Processing' %}
+                            <div class="item item-circle bg-warning mx-auto">
+                                <i class="fa fa-recycle text-danger"></i>
+                            </div>
+                            {% elif adminorderdetail.order_status == 'On the way' %}
+                            <div class="item item-circle bg-primary-light mx-auto">
+                                <i class="fa fa-road text-danger"></i>
+                            </div>
+
+                            {% elif adminorderdetail.order_status == 'Order Completed' %}
+                            <div class="item item-circle bg-success-light mx-auto">
+                                <i class="fa fa-check text-success"></i>
+                            </div>
+                            {% elif adminorderdetail.order_status == 'Order Canceled' %}
+                            <div class="item item-circle bg-danger-light mx-auto">
+                                <i class="fa fa-times text-danger"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p style="color: maroon;" class="font-w600 font-size-sm  mb-0">
+                                
+                                    
+                                {{adminorderdetail.order_status}}
+                               
+                               <div class="form-group m-0 p-0">
+                                          
+                                       <p style="font-size: 14px;"> <b> Change: </b></p>
+                                           
+                                <select class="form-control-sm w-50 h-50 orderstatus" data-href="{% url 'eshopapp:ajax_order_statuschange' %}"  data-order-id="{{adminorderdetail.id}}" name="order-select">
+                                    
+                                        
+                                    <option o_id="{{order.id}}" {% if adminorderdetail.order_status == 'Order Received' %} selected{% endif %}    value="Order Received"   >Order Received</option>
+                                    <option o_id="{{order.id}}"  {% if adminorderdetail.order_status == 'Order Processing' %} selected{% endif %}  value="Order Processing">Order Processing</option>
+                                    <option o_id="{{order.id}}" {% if adminorderdetail.order_status == 'On the way' %} selected{% endif %}  value="On the way">On the way</option>
+                                    <option o_id="{{order.id}}"  {% if adminorderdetail.order_status == 'Order Completed' %} selected{% endif %}  value="Order Completed">Order Completed</option>
+                                    <option o_id="{{order.id}}"  {% if adminorderdetail.order_status == 'Order Canceled' %} selected{% endif %}  value="Order Canceled">Order Canceled</option>
+                                    
+                                    
+                                </select>
+                            </div>
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-6">
+                    <!-- Shipping Address -->
+                    <div class="block block-rounded">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Shipping Address</h3>
+                        </div>
+                        <div class="block-content">
+                            <div class="font-size-h6 mb-1"> <b>Name : </b> {{adminorderdetail.ordered_by}}</div>
+                            <address class="font-size-sm mb-3">
+                               <b>  Address :</b> {{adminorderdetail.shipping_address}}<br>
+                              
+                              <div class="mb-1 mt-1"> <i class="fa fa-phone"></i> <b>Phone :</b> {{adminorderdetail.mobile}}<br></div> 
+                                <i class="fa fa-envelope"></i> <b>Email :</b> <a href="javascript:void(0)"> {{adminorderdetail.email}}</a>
+                            </address>
+                        </div>
+                    </div>
+                    <!-- END Shipping Address -->
+                </div>
+                <!-- <div class="col-6 col-lg-3">
+                    <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                        <div class="block-content block-content-full">
+                            <div class="item item-circle bg-success-light mx-auto">
+                                <i class="fa fa-check text-success"></i>
+                            </div>
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p class="font-w600 font-size-sm text-success mb-0">
+                                Payment
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                        <div class="block-content block-content-full">
+                            <div class="item item-circle bg-warning-light mx-auto">
+                                <i class="fa fa-sync fa-spin text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p class="font-w600 font-size-sm text-warning mb-0">
+                                Packaging
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
+                        <div class="block-content block-content-full">
+                            <div class="item item-circle bg-body mx-auto">
+                                <i class="fa fa-times text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="block-content py-2 bg-body-light">
+                            <p class="font-w600 font-size-sm text-muted mb-0">
+                                Delivery
+                            </p>
+                        </div>
+                    </a>
+                </div> -->
+            </div>
+            <!-- END Quick Overview -->
+
+            <!-- Products -->
+            <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Products</h3>
+                </div>
+                <div class="block-content">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-striped table-vcenter font-size-sm">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 100px;">ID</th>
+                                    <th>Product Name</th>
+                                    <th class="text-center">Stock</th>
+                                    <th class="text-center">QTY</th>
+                                    <th class="text-right" style="width: 10%;">RATE</th>
+                                    <th class="text-right" style="width: 10%;">SUBTOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for p in adminorderdetail.cart.cartproduct_set.all %}
+                                    
+                              
+                                    
+                                <tr>
+                                    <td class="text-center"><a ><strong>ORDER_{{adminorderdetail.id}}</strong></a></td>
+                                    <td><a href="{% url 'eshopapp:adminproductdetail' p.product.id %}">{{p.product.title}}</a>, Size: {% for size in p.product.size.all %}{{ size }} {% endfor %}</td>
+                                    <td class="text-center">{{p.product.instock}}</td>
+                                    <td class="text-center"><strong>{{p.quantity}}</strong></td>
+                                    <td class="text-right">Rs {{p.rate}}</td>
+                                    <td class="text-right">Rs {{p.subtotal}}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td colspan="5" class="text-right"><strong>Total Price:</strong></td>
+                                    <td class="text-right">Rs.{{adminorderdetail.total|intcomma}}</td>
+                                </tr>
+                                <!-- <tr>
+                                    <td colspan="5" class="text-right"><strong>Total Paid:</strong></td>
+                                    <td class="text-right">$177,00</td>
+                                </tr> -->
+                                <tr class="table-success">
+                                    <td colspan="5" class="text-right text-uppercase"><strong>Total Due:</strong></td>
+                                    <td class="text-right"><strong>Rs.{{adminorderdetail.total|intcomma}}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- END Products -->
+
+            
+
+            <!-- Log Messages -->
+            <!-- <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Log Messages</h3>
+                </div>
+                <div class="block-content">
+                    <table class="table table-borderless table-striped table-vcenter font-size-sm">
+                        <tbody>
+                            <tr>
+                                <td class="font-size-base" style="width: 80px;">
+                                    <span class="badge badge-primary">Order</span>
+                                </td>
+                                <td style="width: 220px;">
+                                    <span class="font-w600">January 17, 2020 - 18:00</span>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)">Support</a>
+                                </td>
+                                <td class="text-success">Order Completed</td>
+                            </tr>
+                            <tr>
+                                <td class="font-size-base">
+                                    <span class="badge badge-primary">Order</span>
+                                </td>
+                                <td>
+                                    <span class="font-w600">January 17, 2020 - 17:36</span>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)">Support</a>
+                                </td>
+                                <td class="text-warning">Preparing Order</td>
+                            </tr>
+                            <tr>
+                                <td class="font-size-base">
+                                    <span class="badge badge-success">Payment</span>
+                                </td>
+                                <td>
+                                    <span class="font-w600">January 16, 2020 - 18:10</span>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)">John Parker</a>
+                                </td>
+                                <td class="text-success">Payment Completed</td>
+                            </tr>
+                            <tr>
+                                <td class="font-size-base">
+                                    <span class="badge badge-danger">Email</span>
+                                </td>
+                                <td>
+                                    <span class="font-w600">January 16, 2020 - 10:35</span>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)">Support</a>
+                                </td>
+                                <td class="text-danger">Missing payment details. Email was sent and awaiting for payment before processing</td>
+                            </tr>
+                            <tr>
+                                <td class="font-size-base">
+                                    <span class="badge badge-primary">Order</span>
+                                </td>
+                                <td>
+                                    <span class="font-w600">January 15, 2020 - 14:59</span>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)">Support</a>
+                                </td>
+                                <td>All products are available</td>
+                            </tr>
+                            <tr>
+                                <td class="font-size-base">
+                                    <span class="badge badge-primary">Order</span>
+                                </td>
+                                <td>
+                                    <span class="font-w600">January 15, 2020 - 14:29</span>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)">John Parker</a>
+                                </td>
+                                <td>Order Submitted</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> -->
+            <!-- END Log Messages -->
+        </div>
+        <!-- END Page Content -->
+    </main>
+    <!-- END Main Container -->
+
+    
+    {%endblock%}
+
+    
+    {% block js %}
+    <script type="text/javascript">
+        $('body').on('change', '.orderstatus', function(e){
+          
+         e.preventDefault();
+         // $('.messagealert').remove();
+         $this = $(this);
+         let a = $this.find("option:selected").attr('value')
+       //   alert(a );
+       //   $this.prop('checked', !$this.prop('checked'));
+         $.ajax({
+           
+           url: $this.attr('data-href'),
+           
+           data: {
+             'id' : $this.attr('data-order-id'),
+             'value' : a
+             
+           },
+           success: function(data){
+             
+            
+               $('#order-status').load(' #order-status > *');
+           }
+             
+         });
+       });
+   </script>
+    {% endblock js %}
+   
+        

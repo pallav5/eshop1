@@ -1,0 +1,73 @@
+{% extends 'admintemplates/adminbase.html' %}
+
+{%block 'adminproductcategorycreate' %} 
+
+
+<!-- Main Container -->
+            <main id="main-container">
+                <!-- Page Content -->
+                <div class="content">
+                    {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p class="alert alert-danger alert-dismissable"> {{ error }} </p>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+                  
+                    <!-- Info -->
+                    <div class="block block-rounded">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Image Sliders</h3>
+                        </div>
+                        <div class="block-content">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6 col-lg-12">
+                                    <form action="" method="POST" enctype="multipart/form-data" >
+                                        {% csrf_token %}
+                                        <div class="row" > 
+                                        <div class="form-group col-md-12 col-lg-6 ">
+                                            <label for="one-ecom-product-id">Title</label>
+                                        {{form.title}}
+                                        
+                                        
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6">
+                                            <label for="one-ecom-product-name">Image1</label>
+                                            <div>
+                                         {{form.image1}}</div>
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6">
+                                            <label for="one-ecom-product-name">Image2</label>
+                                            <div>
+                                         {{form.image2}}</div>
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6">
+                                            <label for="one-ecom-product-name">Image3</label>
+                                            <div>
+                                         {{form.image3}}</div>
+                                        </div>
+                                    
+
+                                        <div class="form-group col-lg-12 text-center">
+                                            <button type="submit" class="btn btn-alt-success">Submit</button>
+                                        </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Info -->
+
+                 
+                </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
+
+
+
+
+{%endblock%}
