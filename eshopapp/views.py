@@ -865,24 +865,39 @@ class AjaxProductQtyView(ClientRequiredMixin, TemplateView):
            
            
             p_size = 'S'
-            try:
-                a = this_product_in_cart.get(product__title=product_obj.title, size__shortname=i_size)
-                qty = a.quantity    
-            except:
-                qty = 0
-            print('=====>' + str(qty))
-            print(request.GET['item_size'])
-            t_size = ProductSizeStock.objects.get(product__title=product_obj.title, size__shortname=i_size)
-            d = t_size.instock
-            
+            if i_size:
+                try:
+                    a = this_product_in_cart.get(product__title=product_obj.title, size__shortname=i_size)
+                    qty = a.quantity
+                except:
+                    a = this_product_in_cart.get(product__title=product_obj.title)
+                    qty = a.quantity
+
+            else:
+                a = this_product_in_cart.get(product__title=product_obj.title)
+                qty = a.quantity
+
+
+            if i_size:    
+                print('=====>' + str(qty))
+                print(request.GET['item_size'])
+                t_size = ProductSizeStock.objects.get(product__title=product_obj.title, size__shortname=i_size)
+                d = t_size.instock
+            else:
+                d = product_obj.instock
+                
                 
         else:
+
+            
             qty = 0
-            d = 0
-            t_size = ProductSizeStock.objects.get(product__title=product_obj.title, size__shortname=i_size)
-        
+            if i_size:
+                t_size = ProductSizeStock.objects.get(product__title=product_obj.title, size__shortname=i_size)
+                d = t_size.instock
         # print(qty)
 
+            else:
+                d = product_obj.instock 
         
 
         return JsonResponse({
@@ -891,7 +906,7 @@ class AjaxProductQtyView(ClientRequiredMixin, TemplateView):
             # 'addedproductcolor': product_obj.color.title,
             # 'addedproductsize': product_obj.size.title,
             'addedproductquantity': qty,
-            't_size_stock': t_size.instock ,
+            't_size_stock': d ,
             # 'addedproductprice': cartproduct.rate,
             # 'addedproductimage': product_obj.image1.url
         })    
